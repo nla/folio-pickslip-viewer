@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head th:fragment="htmlhead (title)">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title th:text="${title + ' | National Library of Australia'}"/>
+    <meta name="description" content="" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/pickslip.css}"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}" />
+
+    <script th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <meta name="viewport" content="width=device-width" />
+    <base th:href="@{/}" />
+</head>
+
+<header th:fragment="header(stacks)" id="header">
+    <nav class="navbar navbar-expand-md navbar-dark">
+        <a class="navbar-brand" th:href="@{/home}">
+            <span class="logo ms-2">Pickslips</span>
+        </a>
+        <div class="collapse navbar-collapse" id="topNavbar">
+            <ul class="navbar-nav">
+                <li th:each="loc : ${stacks}" class="nav-item" >
+                    <a class="nav-link" th:classappend="'stack-'+${loc.code}" th:href="@{/location/{code}(code = ${loc.code})}" th:text="${loc.label}"/>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<body>
+
+<div th:fragment="admintitle (name, description)" id="title">
+    <div class="bg-light header">
+        <h2 class="font-weight-light" th:utext="${name}"/>
+        <p class="text-secondary font-weight-light" th:utext="${description}"></p>
+    </div>
+</div>
+
+<div th:fragment="errorAndMessage">
+    <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span class="bi-exclamation-triangle"/><span class="ms-2">An error occurred: [[${error}]]</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <th:block th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message" role="alert">
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="successToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <span class="bi-info-circle"/><span class="ms-1">[[${message}]]</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">(new bootstrap.Toast($('#successToast')[0])).show();</script>
+    </th:block>
+</div>
+
+
+</body>
+</html>

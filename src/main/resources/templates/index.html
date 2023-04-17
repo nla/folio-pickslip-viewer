@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="~{common/general :: htmlhead('Pickslips')}" />
+
+<body class="bg-dark">
+<header th:replace="~{common/general :: header(${stacks})}" />
+
+<main>
+
+    <div class="p-3">
+        <div class="container-fluid bg-light mt-2 rounded">
+
+            <header th:replace="~{common/general :: admintitle('Pickslip Requests', 'All Requests')}" />
+
+            <div class="bg-white m-2 p-4 border border-1 rounded">
+
+                <div th:replace="~{common/general :: errorAndMessage}" />
+
+                <table class="table table-sm table-hover table-responsive-xl">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Call Number</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Patron Group</th>
+                        <th scope="col">Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        <th:block th:each="loc : ${stacks}">
+                            <th:block th:with="queue = ${queues.getPickslipsForStack(loc.code)}">
+
+                                <tr class="heading bg-light text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
+                                    <td colspan="5" class="pt-3 px-2">
+                                        [[${loc.label}]]
+                                    </td>
+                                </tr>
+
+                                <tr th:each="s : ${queue}" th:classappend="|stack-${loc.code}${s.visiting ? ' visiting' : ''}|" >
+                                    <td class="px-4 nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
+                                    <td>
+                                        <a th:target="_blank"
+                                           th:href="${@environment.getProperty('folio.request-view-prefix')}
+                                               +${s.request.id}
+                                               +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
+                                    </td>
+
+                                    <td> <span class="nobreak fs-small px-2 py-1 fw-lighter rounded-4"
+                                               th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
+                                        [[${s.request.status}]]
+                                    </span></td>
+
+                                    <td class="nobreak">[[${s.request.patronGroup}]]</td>
+                                    <td>[[${s.item.title}]]</td>
+                                </tr>
+
+                            </th:block>
+                        </th:block>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+
+</body>
+</html>

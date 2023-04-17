@@ -1,0 +1,39 @@
+
+
+stacklocations:
+  stacks:
+    -
+      code: LAKE-SP
+      label: Lakeside
+    -
+      code: EAST-SP
+      label: East
+    -
+      code: CENT-SP
+      label: Central
+    -
+      code: WEST-SP
+      label: West
+    -
+      code: LG1-SP
+      label: LG-1
+    -
+      code: MITCHELL-SP
+      label: Mitchell
+    -
+      code: HUME-SP
+      label: Hume
+    -
+      code: PICMSS-SP
+      label: Pictures & Manuscripts
+    -
+      code: 3RD-SP
+      label: Third Floor
+
+#  NMRR-SP
+#  3RD-SP
+#  PROC-SP
+#  PRES-SP
+#  MRR-SP
+#  CAND-SP
+#  SCRR-SP

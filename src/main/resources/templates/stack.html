@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="~{common/general :: htmlhead('Pickslips')}" />
+
+<body class="bg-dark">
+<header th:replace="~{common/general :: header(${stacks})}" />
+
+<main>
+    <div class="p-3">
+
+    <div class="container-fluid bg-light p-2 rounded" th:classappend="'stack-'+${stack.code}">
+
+        <header th:replace="~{common/general :: admintitle(${stack.label}, 'View and print pickslips')}" />
+
+        <div th:if="${visitors?.size() > 0}" class="bg-white m-2 p-4 border border-1 rounded">
+
+            <div class="row">
+                <legend class="col">
+                    <span class="bi-lightning"/><span class="ms-1">Visitors</span>
+                </legend>
+            </div>
+
+            <div>
+                <table class="table table-sm table-hover table-responsive-xl">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Position</th>
+                        <th scope="col">Call Number</th>
+                        <th scope="col">Patron Comments</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Patron Group</th>
+                        <th scope="col">Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s : ${visitors}">
+                        <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
+                        <td>[[${s.request.position}]]</td>
+                        <td>
+                            <a th:target="_blank"
+                               th:href="${@environment.getProperty('folio.request-view-prefix')}
+                                       +${s.request.id}
+                                       +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
+                        </td>
+                        <td>[[${s.request.patronComments}]]</td>
+                        <td> <span class="nobreak fs-small px-2 py-1 fw-lighter rounded-4"
+                                   th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
+                                        [[${s.request.status}]]
+                                    </span></td>
+                        <td>[[${s.request.patronGroup}]]</td>
+                        <td>[[${s.item.title}]]</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="bg-white m-2 p-4 border border-1 rounded">
+
+            <div class="row">
+                <legend class="col">
+                    <span class="bi-list"/><span class="ms-1">Requests</span>
+                </legend>
+            </div>
+
+            <div th:replace="~{common/general :: errorAndMessage}" />
+
+            <div th:if="${queue?.size() > 0}">
+                <table class="table table-sm table-hover table-responsive-xl">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Call Number</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Patron Group</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s : ${queue}" th:classappend="${s.visiting ? 'visiting' : ''}" >
+                        <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
+                        <td>
+                            <a th:target="_blank"
+                               th:href="${@environment.getProperty('folio.request-view-prefix')}
+                                       +${s.request.id}
+                                       +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
+                        </td>
+                        <td> <span class="nobreak fs-small px-2 py-1 fw-lighter rounded-4"
+                                   th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
+                                        [[${s.request.status}]]
+                                    </span></td>
+                        <td class="nobreak">[[${s.request.patronGroup}]]</td>
+                        <td>[[${s.item.title}]]</td>
+                        <td>
+                            <a th:if="${s.request.isNotYetFilled()}"
+                               th:href="@{/export/{rid}(rid=${s.request.id})}"
+                               title="Print"
+                               class="action bi-printer"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="" th:unless="${queue?.size() > 0}">
+                <span>No Requests found!</span>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+</main>
+
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <link rel="stylesheet" href="src/main/resources/pdf/css/pdf.css"/>
+    </head>
+
+    <div id="pickslip">
+
+        <div id="shelf-copy">
+            <h1>Retrieval</h1>
+            <div class="barcode">
+                <p class="barcode39" th:text="${pickslip.item.barcode}"/>
+            </div>
+
+            <div class="pickslip-info">
+                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+                <p th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
+            </div>
+
+            <div class="item-info">
+                <p class="heavy-font" th:text="${pickslip.item.callNumber}"/>
+                <p th:text="${pickslip.item.title} ?: '-'"/>
+                <p th:text="${pickslip.item.primaryContributor} ?: '-'"/>
+                <p th:text="${pickslip.item.allContributors} ?: '-'"/>
+                <p th:text="${pickslip.item.descriptionOfPieces} ?: '-'"/>
+                <p th:text="${pickslip.item.chronology} ?: '-'"/>
+                <p th:text="${pickslip.item.enumeration} ?: '-'"/>
+            </div>
+
+            <div class="patron-info">
+                <p>
+                    <span th:text="${pickslip.request.requester.firstName} ?: '-'"/>
+                    <span th:text="${pickslip.request.requester.lastName} ?: '-'"/>
+                    (<span th:text="${pickslip.request.patronGroup} ?: '-'"/>)
+                </p>
+                <p th:text="${pickslip.request.patronComments} ?: '-'"/>
+            </div>
+            <p class="light-font">
+                (Request <span th:text="${pickslip.request.id}"/>)
+            </p>
+        </div>
+
+        <div id="patron-copy">
+            <h1>Reading Room</h1>
+            <p>(Reading room copy)</p>
+
+            <div class="barcode">
+                <p class="barcode39" th:text="${pickslip.item.barcode}"/>
+            </div>
+
+            <div class="pickslip-info">
+                <p th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
+            </div>
+
+            <div class="item-info">
+                <p class="heavy-font" th:text="${pickslip.item.callNumber}"/>
+                <p th:text="${pickslip.item.title} ?: '-'"/>
+                <p th:text="${pickslip.item.primaryContributor} ?: '-'"/>
+                <p th:text="${pickslip.item.allContributors} ?: '-'"/>
+                <p th:text="${pickslip.item.descriptionOfPieces} ?: '-'"/>
+                <p th:text="${pickslip.item.chronology} ?: '-'"/>
+                <p th:text="${pickslip.item.enumeration} ?: '-'"/>
+            </div>
+
+            <div class="patron-info">
+                <p>
+                    <span th:text="${pickslip.request.requester.firstName} ?: '-'"/>
+                    <span th:text="${pickslip.request.requester.lastName} ?: '-'"/>
+                    (<span th:text="${pickslip.request.patronGroup} ?: '-'"/>)
+                </p>
+            </div>
+            <p class="light-font">
+                (Request <span th:text="${pickslip.request.id}"/>)
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+</html>

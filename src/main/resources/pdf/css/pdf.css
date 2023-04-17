@@ -1,0 +1,102 @@
+/*
+@font-face {
+    font-family:"Barcode39";
+    src: url("classpath:src/main/resources/static/fonts/LibreBarcode39-Regular.ttf"),
+    url("classpath:resources/static/fonts/LibreBarcode39-Regular.ttf"),
+    url("classpath:static/fonts/LibreBarcode39-Regular.ttf");
+    format("truetype");
+    -fs-pdf-font-embed: embed;
+    -fs-pdf-font-encoding: Identity-H;
+}
+*/
+/*
+@font-face {
+    font-family: DejaVu Serif;
+    src: url(fonts/DejaVuSerif.ttf);
+    -fs-pdf-font-embed: embed;
+    -fs-pdf-font-encoding: Identity-H;
+}
+*/
+
+@page {
+    size: A4;
+    margin: 0.5in;
+}
+
+
+#pickslip {
+    page-break-before: always;
+}
+
+.moved {
+}
+
+#patron-copy {
+    position: fixed;
+    width: 100%;
+    top: 55%;
+}
+#shelf-copy {
+    position: fixed;
+    width: 100%;
+    top: 0%;
+}
+
+
+/*
+#patron-copy {
+    page-break-before: always;
+}
+*/
+
+h1 {
+    font-size: large;
+}
+
+.pickslip-info {
+    padding: 1em 0;
+}
+
+
+.pickslip-info p {
+    padding: 0.25em;
+}
+
+.heavy-font {
+    font-weight: 600;
+}
+
+.light-font {
+    font-weight: 100;
+}
+
+
+.item-info {
+    border: 1px solid;
+    padding: 1em;
+}
+
+.patron-info {
+    padding: 1em 0;
+}
+
+.barcode {
+    padding: 1em 0;
+    text-align: right;
+}
+
+.barcode39 {
+    font-family: 'Libre Barcode 128 Text';
+    /* font-family: 'Libre Barcode 39 Extended Text', 'Libre Barcode 39 Extended', 'Libre Barcode 39', 'Libre Barcode';*/
+    font-size: 3em;
+}
+
+/*
+html {
+    font-family: sans-serif;
+}*/
+
+p {
+    margin: 0;
+    color : black;
+}
