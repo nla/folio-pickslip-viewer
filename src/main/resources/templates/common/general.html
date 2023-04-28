@@ -20,15 +20,21 @@
     <base th:href="@{/}" />
 </head>
 
-<header th:fragment="header(stacks)" id="header">
+<header th:fragment="header(stacks, showOnly)" id="header">
     <nav class="navbar navbar-expand-md navbar-dark">
-        <a class="navbar-brand" th:href="@{/home}">
+        <a class="navbar-brand"
+           th:href="${showOnly} ? @{/home(showOnly=${showOnly})}
+                                : @{/home}">
             <span class="logo ms-2">Pickslips</span>
         </a>
         <div class="collapse navbar-collapse" id="topNavbar">
             <ul class="navbar-nav">
                 <li th:each="loc : ${stacks}" class="nav-item" >
-                    <a class="nav-link" th:classappend="'stack-'+${loc.code}" th:href="@{/location/{code}(code = ${loc.code})}" th:text="${loc.label}"/>
+                    <a class="nav-link"
+                       th:classappend="'stack-'+${loc.code}"
+                       th:href="${showOnly} ? @{/location/{code}(code = ${loc.code},showOnly=${showOnly})}
+                                            : @{/location/{code}(code = ${loc.code})}"
+                       th:text="${loc.label}"/>
                 </li>
             </ul>
         </div>

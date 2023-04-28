@@ -8,6 +8,9 @@ import au.gov.nla.pickslip.service.ScheduledRequestRetrieverService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +45,12 @@ public class HomeController {
   }
 
   @GetMapping({"/location/{stack}"})
-  public String stack(@PathVariable(value = "stack") String stackCode, Model model) {
+  public String stack(@PathVariable(value = "stack") String stackCode,
+                      @RequestParam(required = false) String[] showOnly,
+                      Model model) {
 
-    model.addAttribute("stacks", stackLocations.getStacks());
+    model.addAttribute("showOnly", showOnly);
+    model.addAttribute("stacks", filterStackLocations(showOnly));
     model.addAttribute("stack", stackLocations.getStackForCode(stackCode));
     model.addAttribute("queue", pickslipQueues.getPickslipsForStack(stackCode));
     model.addAttribute("visitors", pickslipQueues.getVisitorsForStack(stackCode));
@@ -53,11 +59,33 @@ public class HomeController {
   }
 
   @GetMapping({"", "/", "/home"})
-  public String index(Model model) {
+  public String index(Model model,
+                      @RequestParam(required = false) String[] showOnly) {
 
-    model.addAttribute("stacks", stackLocations.getStacks());
+    model.addAttribute("showOnly", showOnly);
+    model.addAttribute("stacks", filterStackLocations(showOnly));
     model.addAttribute("queues", pickslipQueues);
 
     return "index";
   }
+
+  private List<StackLocations.Location> filterStackLocations(String[] stackCodes) {
+
+    List<StackLocations.Location> stackList = null;
+
+    // use specified in given order if present
+    if (stackCodes != null) {
+      stackList = new ArrayList<>();
+      for (String code: stackCodes) {
+        var stack = stackLocations.getStackForCode(code);
+        if (stack != null) {
+          stackList.add(stack);
+        }
+      }
+    }
+    return (stackList != null && stackList.size() > 0)
+            ? stackList
+            : stackLocations.getStacks();
+  }
+
 }
