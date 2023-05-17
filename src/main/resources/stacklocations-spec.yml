@@ -31,9 +31,10 @@ stacklocations:
       label: Third Floor
 
 #  NMRR-SP
-#  3RD-SP
 #  PROC-SP
 #  PRES-SP
 #  MRR-SP
 #  CAND-SP
 #  SCRR-SP
+#  ILL-SP
+#  ONLINE-SP

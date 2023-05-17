@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Label</title>
+    <style>
+        @media print {
+            html { padding:0;margin:0 }
+            body { padding:5px 15px 0px 15px;margin:0 }
+            .noPrint { display:none }
+            .box { margin:0px;padding:0px }
+            pre { font-size:120%; margin:0; padding:0 }
+        }
+        @media screen {
+            .noPrint { display:block }
+            .box { width:20em;border:2px solid #aaaaaa;background:#eeeeee;margin:30px;padding:3px 20px }
+            .warning { font-size:140%; color:#ff4444 }
+            pre { font-size:120% }
+        }
+    </style>
+</head>
+<body onload='window.print()'>
+    <h1 class='noPrint'>Print this to your Trusty Zebra label printer!</h1>
+    <div class='box'>
+      <pre th:text="${data}">
+    </div>
+    <h2 class='noPrint warning'>Before printing, please ensure that your browser's print headers and footers
+        are disabled, and that margins are set to <i>None</i> before printing.</h2>
+</body>
+</html>

@@ -8,7 +8,7 @@
 <main>
 
     <div class="p-3">
-        <div class="container-fluid bg-light mt-2 rounded">
+        <div class="container-fluid bg-light p-2 rounded">
 
             <header th:replace="~{common/general :: admintitle('Pickslip Requests', 'All Requests')}" />
 
@@ -24,6 +24,7 @@
                         <th scope="col">Status</th>
                         <th scope="col">Patron Group</th>
                         <th scope="col">Title</th>
+                        <th scope="col">Barcode</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -32,7 +33,7 @@
                             <th:block th:with="queue = ${queues.getPickslipsForStack(loc.code)}">
 
                                 <tr class="heading bg-light text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
-                                    <td colspan="5" class="pt-3 px-2">
+                                    <td colspan="6" class="pt-3 px-2">
                                         [[${loc.label}]]
                                     </td>
                                 </tr>
@@ -53,6 +54,7 @@
 
                                     <td class="nobreak">[[${s.request.patronGroup}]]</td>
                                     <td>[[${s.item.title}]]</td>
+                                    <td class="text-muted fw-lighter">[[${s.item.barcode}]]</td>
                                 </tr>
 
                             </th:block>

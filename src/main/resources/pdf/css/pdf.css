@@ -1,65 +1,104 @@
-/*
-@font-face {
-    font-family:"Barcode39";
-    src: url("classpath:src/main/resources/static/fonts/LibreBarcode39-Regular.ttf"),
-    url("classpath:resources/static/fonts/LibreBarcode39-Regular.ttf"),
-    url("classpath:static/fonts/LibreBarcode39-Regular.ttf");
-    format("truetype");
-    -fs-pdf-font-embed: embed;
-    -fs-pdf-font-encoding: Identity-H;
-}
-*/
-/*
-@font-face {
-    font-family: DejaVu Serif;
-    src: url(fonts/DejaVuSerif.ttf);
-    -fs-pdf-font-embed: embed;
-    -fs-pdf-font-encoding: Identity-H;
-}
-*/
+ html {
+   font-size:12px;
+ }
 
 @page {
     size: A4;
     margin: 0.5in;
 }
 
-
-#pickslip {
+.pickslip {
     page-break-before: always;
 }
 
-.moved {
-}
-
-#patron-copy {
+.patron-copy {
     position: fixed;
     width: 100%;
     top: 55%;
 }
-#shelf-copy {
+
+.shelf-copy {
     position: fixed;
     width: 100%;
     top: 0%;
 }
 
-
-/*
-#patron-copy {
-    page-break-before: always;
+.w100 {
+    width: 100%;
 }
-*/
+
+.w50 {
+    width: 50%;
+}
+
+ .w70 {
+     width: 70%;
+ }
+
+ .w30 {
+     width: 30%;
+ }
 
 h1 {
     font-size: large;
 }
 
-.pickslip-info {
-    padding: 1em 0;
+.align-top {
+    vertical-align: top;
 }
 
+.align-right {
+    text-align: right;
+}
 
-.pickslip-info p {
-    padding: 0.25em;
+.align-left {
+    text-align: left;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.label {
+    white-space: nowrap;
+    text-align: right;
+    vertical-align: top;
+    font-weight: 100;
+    width: 10%;
+}
+
+.label-left {
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: top;
+    font-weight: 100;
+    width: 10%;
+}
+
+p.spaced-above {
+    padding-top: 1em;
+}
+
+tr.spaced-below>td {
+    padding-bottom: 1em;
+}
+
+tr.spaced-above>td {
+    padding-top: 1em;
+}
+
+.request-info {
+    padding: 0.5em 0;
+}
+
+.patron-info {
+    padding: 0.25em 0;
+}
+
+.serial-info {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em 0;
 }
 
 .heavy-font {
@@ -70,33 +109,27 @@ h1 {
     font-weight: 100;
 }
 
-
 .item-info {
+    margin-top: 2em;
     border: 1px solid;
-    padding: 1em;
+    padding: 0.25em;
 }
 
-.patron-info {
-    padding: 1em 0;
+.barcode128 {
+    padding: 0;
+    margin: 0;
+    border:0;
 }
 
-.barcode {
-    padding: 1em 0;
-    text-align: right;
+.barcodetext {
+    font-size: 0.8em;
+    font-family: monospace, monospace;
 }
 
-.barcode39 {
-    font-family: 'Libre Barcode 128 Text';
-    /* font-family: 'Libre Barcode 39 Extended Text', 'Libre Barcode 39 Extended', 'Libre Barcode 39', 'Libre Barcode';*/
-    font-size: 3em;
-}
-
-/*
 html {
     font-family: sans-serif;
-}*/
+}
 
 p {
     margin: 0;
-    color : black;
 }

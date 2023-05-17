@@ -6,79 +6,167 @@
         <link rel="stylesheet" href="classpath:/pdf/css/pdf.css"/>
     </head>
 
-    <div id="pickslip">
+    <div class="pickslip">
 
-        <div id="shelf-copy">
-            <h1>Retrieval</h1>
-            <div class="barcode">
-                <p class="barcode39" th:text="${pickslip.item.barcode}"/>
-            </div>
+        <div class="shelf-copy">
+            <table class="w100">
+                <tr>
+                    <td class = "align-top">
+                        <p class ="heavy-font" th:text="${pickslip.item.callNumber}" />
 
-            <div class="pickslip-info">
-                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
-                <p th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
-            </div>
+                        <table>
+                            <tr class="spaced-above">
+                                <td class="label-left">Title:</td>
+                                <td th:text="${pickslip.item.title} ?: '-'"/>
+                            </tr>
+                            <tr>
+                                <td class="label-left">Author:</td>
+                                <td th:text="${pickslip.item.primaryContributor} ?: '-'"/>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="align-top align-right">
+                        <table>
+                            <tr><td>
+                                <div>
+                                    <img class="barcode128" th:src="${barcode64}"/>
+                                    <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'" />
+                                </div>
+                            </td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
 
             <div class="item-info">
-                <p class="heavy-font" th:text="${pickslip.item.callNumber}"/>
-                <p th:text="${pickslip.item.title} ?: '-'"/>
-                <p th:text="${pickslip.item.primaryContributor} ?: '-'"/>
-                <p th:text="${pickslip.item.allContributors} ?: '-'"/>
-                <p th:text="${pickslip.item.descriptionOfPieces} ?: '-'"/>
-                <p th:text="${pickslip.item.chronology} ?: '-'"/>
-                <p th:text="${pickslip.item.enumeration} ?: '-'"/>
+                <table class="w100">
+                    <tr>
+                        <td class="align-top w50">
+                            <table class="w100">
+                                <tr> <td class="label">Bib Id:</td>    <td th:text="${instance.hrid} ?: '-'"/> </tr>
+                                <tr> <td class="label">Spine:</td>     <td th:text="'(Not implemented)'"/> </tr>
+                                <tr> <td class="label">Inprint:</td>   <td th:text="(${instance.publicationPlace} ?: '-') + ' ' +
+                                                                                    (${instance.publicationDateOfPublication} ?: '-')"/> </tr>
+                                <tr> <td class="label">Collation:</td> <td th:text="${instance.physicalDescriptions} ?: '-'"/> </tr>
+                                <tr> <td class="label">Access conditions:</td> <td th:text="${instance.accessConditions} ?: '-'"/> </tr>
+                                <tr> <td class="label">Terms of use:</td>      <td th:text="${instance.termsOfUse} ?: '-'"/> </tr>
+                            </table>
+                        </td>
+                        <td class="align-top w50">
+                            <table class="w100">
+                                <tr> <td class="label">Edition:</td>   <td th:text="${instance.editions} ?: '-'"/> </tr>
+                                <tr> <td class="label">Series:</td>    <td th:text="${instance.series} ?: '-'"/> </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="serial-info">
+                <table>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td th:text="${pickslip.item.enumeration} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td th:text="${pickslip.item.chronology} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'"/> </tr>
+                </table>
             </div>
 
             <div class="patron-info">
-                <p>
-                    <span th:text="${pickslip.request.requester.firstName} ?: '-'"/>
-                    <span th:text="${pickslip.request.requester.lastName} ?: '-'"/>
-                    (<span th:text="${pickslip.request.patronGroup} ?: '-'"/>)
-                </p>
-                <p th:text="${pickslip.request.patronComments} ?: '-'"/>
+                <table>
+                    <tr> <td class="label-left">Patron name:</td> <td th:text="(${pickslip.request.requester.firstName} ?: '-') + ' ' +
+                                                                               (${pickslip.request.requester.lastName} ?: '-')"/> </tr>
+                    <tr> <td></td>                           <td th:text="${pickslip.request.patronGroup} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Note:</td>   <td th:text="${pickslip.request.patronComments} ?: '-'"/> </tr>
+                </table>
             </div>
-            <p class="light-font">
-                (Request <span th:text="${pickslip.request.id}"/>)
-            </p>
+
+            <div class="request-info">
+                <table class="w100">
+                    <tr>
+                        <td class="align-left">
+                            <p th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
+                        </td>
+                        <td class="align-right">
+                            <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
         </div>
 
-        <div id="patron-copy">
-            <h1>Reading Room</h1>
-            <p>(Reading room copy)</p>
+        <div class="patron-copy">
 
-            <div class="barcode">
-                <p class="barcode39" th:text="${pickslip.item.barcode}"/>
+            <table class="w100">
+                <tr>
+                    <td class="align-top align-left w30">
+                        <table>
+                            <tr><td>
+                                <div>
+                                    <img class="barcode128" th:src="${barcode64}"/>
+                                    <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'" />
+                                </div>
+                            </td></tr>
+                        </table>
+                        <p class="spaced-above">
+                            <span class ="heavy-font" th:text="(${pickslip.request.requester.lastName} ?: '-') + ', ' +
+                                                               (${pickslip.request.requester.firstName} ?: '-')" />
+                        </p>
+                        <p th:text="${pickslip.request.patronGroup} ?: '-'"/>
+                        <p class="spaced-above" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}" />
+                        <p class="spaced-above heavy-font" th:text="${pickslip.item.callNumber}" />
+                    </td>
+
+                    <td class="align-top w70">
+                        <table class="w100">
+                            <tr>
+                                <td class="label">Title:</td>
+                                <td th:text="${pickslip.item.title} ?: '-'"/>
+                            </tr>
+                            <tr>
+                                <td class="label">Author:</td>
+                                <td th:text="${pickslip.item.primaryContributor} ?: '-'"/>
+                            </tr>
+                            <tr>
+                                <td class="label">Stack:</td>
+                                <td th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+                            </tr>
+
+                            <tr class="spaced-above">
+                                <td class="label">Note:</td>
+                                <td th:text="${pickslip.request.patronComments} ?: '-'"/>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="serial-info">
+                <table class="w100">
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td th:text="${pickslip.item.enumeration} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td th:text="${pickslip.item.chronology} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'"/> </tr>
+
+                    <tr class="spaced-above">
+                        <td colspan="2">
+                            <table class="item-info w100">
+                                <tr>
+                                    <td class="label-left">Access conditions:</td>
+                                    <td th:text="${instance.accessConditions} ?: '-'"/>
+                                </tr>
+                                <tr>
+                                    <td class="label-left">Terms of use:</td>
+                                    <td th:text="${instance.termsOfUse} ?: '-'"/>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
             </div>
-
-            <div class="pickslip-info">
-                <p th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
-            </div>
-
-            <div class="item-info">
-                <p class="heavy-font" th:text="${pickslip.item.callNumber}"/>
-                <p th:text="${pickslip.item.title} ?: '-'"/>
-                <p th:text="${pickslip.item.primaryContributor} ?: '-'"/>
-                <p th:text="${pickslip.item.allContributors} ?: '-'"/>
-                <p th:text="${pickslip.item.descriptionOfPieces} ?: '-'"/>
-                <p th:text="${pickslip.item.chronology} ?: '-'"/>
-                <p th:text="${pickslip.item.enumeration} ?: '-'"/>
-            </div>
-
-            <div class="patron-info">
-                <p>
-                    <span th:text="${pickslip.request.requester.firstName} ?: '-'"/>
-                    <span th:text="${pickslip.request.requester.lastName} ?: '-'"/>
-                    (<span th:text="${pickslip.request.patronGroup} ?: '-'"/>)
-                </p>
-            </div>
-            <p class="light-font">
-                (Request <span th:text="${pickslip.request.id}"/>)
-            </p>
-
 
         </div>
-
-
     </div>
-
 </html>

@@ -11,7 +11,9 @@ public record FolioPickslip(String requestId, Item item, Requester requester) {
       String callNumber,
       String chronology,
       String enumeration,
-      String effectiveLocationSpecific) {}
+      String effectiveLocationSpecific,
+      String yearCaption,
+      String copy) {}
 
   public record Requester(String firstName, String lastName, String barcode) {}
   ;

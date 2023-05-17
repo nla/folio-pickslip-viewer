@@ -7,22 +7,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /* Representation of request queues in FOLIO. This is the core data model for this application. This structure is
-   built up from the following four sources:
+  built up from the following four sources:
 
-     - data in the configuration file (stack codes and display names)
-     - 'pickslip' data from FOLIO (api call)
-     - 'service point' data from FOLIO (api call, linked by stack code in configuration file)
-     - 'request' data from FOLIO (api call)
+    - data in the configuration file (stack codes and display names)
+    - 'pickslip' data from FOLIO (api call)
+    - 'service point' data from FOLIO (api call, linked by stack code in configuration file)
+    - 'request' data from FOLIO (api call)
 
-   When a request associated with a pickslip changes from "Open - Not yet filled" to "Open - In transit" - it no
-   longer appears in pickslip data (from the pickslip api).  For this reason, certain information (such as "title")
-   is no longer available to this application, and so can't be displayed.  (It's a requirement that these 'In transit"
-   requests are shown alongside information about actual pickslips, differentiated only by status.)
+  When a request associated with a pickslip changes from "Open - Not yet filled" to "Open - In transit" - it no
+  longer appears in pickslip data (from the pickslip api).  For this reason, certain information (such as "title")
+  is no longer available to this application, and so can't be displayed.  (It's a requirement that these 'In transit"
+  requests are shown alongside information about actual pickslips, differentiated only by status.)
 
-   Also of note - the model has a concept of "visiting" pickslips.  A pickslip can be a visitor to another stack if it's
-   associated request has a tag which is equal to the stack's code.  This is to support workflow whereby requests can be
-   temporarily 'sent' to another stack for filtering or modification  (e.g. Pictures and Manuscripts.)
- */
+  Also of note - the model has a concept of "visiting" pickslips.  A pickslip can be a visitor to another stack if it's
+  associated request has a tag which is equal to the stack's code.  This is to support workflow whereby requests can be
+  temporarily 'sent' to another stack for filtering or modification  (e.g. Pictures and Manuscripts.)
+*/
 public class PickslipQueues {
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
@@ -53,7 +53,7 @@ public class PickslipQueues {
   public record Pickslip(
       boolean
           visiting, // contains at least one tag which corresponds to another Service Point / Stack
-                    // - flagged for attention by another stack area.
+      // - flagged for attention by another stack area.
       Request request,
       Item item,
       Instance instance) {
@@ -102,7 +102,9 @@ public class PickslipQueues {
         String callNumber, // pickslip,
         String chronology,
         String enumeration,
-        String effectiveLocationSpecific) {}
+        String effectiveLocationSpecific,
+        String yearCaption,
+        String copy) {}
     ;
 
     public record Instance(String id, String title) {}
@@ -147,7 +149,9 @@ public class PickslipQueues {
                 fr.item().callNumber(),
                 UNAVAILABLE, // chronology
                 UNAVAILABLE, // enumeration
-                UNAVAILABLE // effectiveLocationSpecific
+                UNAVAILABLE, // effectiveLocationSpecific
+                UNAVAILABLE, // yearCaption
+                UNAVAILABLE // copy
                 );
       } else {
         item =
@@ -161,7 +165,9 @@ public class PickslipQueues {
                 fps.item().callNumber(),
                 fps.item().chronology(),
                 fps.item().enumeration(),
-                fps.item().effectiveLocationSpecific());
+                fps.item().effectiveLocationSpecific(),
+                fps.item().yearCaption(),
+                fps.item().copy());
       }
 
       Instance instance = new Instance(fr.instanceId(), fr.instance().title());
@@ -201,10 +207,10 @@ public class PickslipQueues {
       List<FolioServicePoint> folioServicePoints, // all service point records from FOLIO
       List<FolioLocation>
           folioLocations, // all locations with link to primary service point (locations are in
-                          // folio requests)
+      // folio requests)
       Map<FolioServicePoint, List<FolioPickslip>>
           folioPickslipsByServicePoint) { // all pickslips for NOT YET FILLED requests for all
-                                          // service points
+    // service points
 
     // loc->FolioSp
     List<ServicePoint> servicePoints =

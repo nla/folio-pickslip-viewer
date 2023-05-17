@@ -4,22 +4,36 @@ import au.gov.nla.folio.api.*;
 import au.gov.nla.folio.api.credentials.FOLIOAPICredentials;
 import au.gov.nla.folio.util.FOLIOAPIUtils;
 import au.gov.nla.pickslip.domain.*;
+import au.gov.nla.pickslip.service.async.FolioAsyncService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FolioService {
 
+  @Value("${folio.requests.limit}")
+  private int folioRequestsLimit;
+
+  @Value("${folio.pickslips.limit}")
+  private int folioPickslipsLimit;
+
   @Value("#{${folioConfigMap}}")
   private Map<String, String> folioOkapiCredentialsMap;
+
+  // delegate all async
+  @Autowired FolioAsyncService folioAsyncService;
 
   private FOLIOAPICredentials folioOkapiCredentials;
 
@@ -28,6 +42,20 @@ public class FolioService {
   @PostConstruct
   public void init() {
     folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(this.folioOkapiCredentialsMap);
+  }
+
+  public Map<String, FolioInstance> getFolioInstances(List<String> instanceIds)
+      throws JsonProcessingException {
+
+    List<CompletableFuture<FolioInstance>> futures = new ArrayList<>();
+    for (String id : instanceIds) {
+      futures.add(folioAsyncService.getFolioInstance(id)); // timeout exists..
+    }
+
+    // need to not put same in twice (key repeat) - merge
+    return futures.stream()
+        .map(CompletableFuture::join)
+        .collect(Collectors.toMap(FolioInstance::id, v -> v, (k1, k2) -> k1));
   }
 
   public List<FolioServicePoint> getFolioServicePoints() throws IOException {
@@ -90,9 +118,7 @@ public class FolioService {
       var pickslips = getPickslipsForServicePoint(sp.id());
 
       log.debug(
-          "{} pickslips retrieved for {}",
-          pickslips == null ? 0 : pickslips.size(),
-          sp.code());
+          "{} pickslips retrieved for {}", pickslips == null ? 0 : pickslips.size(), sp.code());
 
       result.put(sp, pickslips);
     }
@@ -103,7 +129,8 @@ public class FolioService {
   public List<FolioPickslip> getPickslipsForServicePoint(String id) throws IOException {
 
     JsonNode n =
-        new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials).getPickslipsForServicePoint(id);
+        new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials)
+            .getPickslipsForServicePoint(id, folioPickslipsLimit);
 
     if (n == null) {
       log.debug("No pickslips for {}", id);
@@ -127,7 +154,9 @@ public class FolioService {
                           r.at("/item/callNumber").asText(null),
                           r.at("/item/chronology").asText(null),
                           r.at("/item/enumeration").asText(null),
-                          r.at("/item/effectiveLocationSpecific").asText(null)),
+                          r.at("/item/effectiveLocationSpecific").asText(null),
+                          r.at("/item/yearCaption").asText(null),
+                          r.at("/item/copy").asText(null)),
                       new FolioPickslip.Requester(
                           r.at("/requester/firstName").asText(null),
                           r.at("/requester/lastName").asText(null),
@@ -152,44 +181,47 @@ public class FolioService {
             .getRequestsByStatus(
                 List.of(
                     PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED.getCode(),
-                    PickslipQueues.Pickslip.Request.Status.OPEN_IN_TRANSIT.getCode()));
+                    PickslipQueues.Pickslip.Request.Status.OPEN_IN_TRANSIT.getCode()),
+                folioRequestsLimit);
 
     ArrayList<FolioRequest> result = new ArrayList<>();
 
-    n.at("/requests")
-        .forEach(
-            r -> {
-              var requestDateNode = r.at("/requestDate");
-              LocalDateTime requestDate =
-                  requestDateNode.isNull()
-                      ? null
-                      : LocalDateTime.parse(
-                          requestDateNode.asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    if (n != null) {
+      n.at("/requests")
+          .forEach(
+              r -> {
+                var requestDateNode = r.at("/requestDate");
+                LocalDateTime requestDate =
+                    requestDateNode.isNull()
+                        ? null
+                        : LocalDateTime.parse(
+                            requestDateNode.asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
-              FolioRequest req =
-                  new FolioRequest(
-                      r.at("/id").asText(null),
-                      requestDate,
-                      r.at("/patronComments").asText(null),
-                      r.at("/itemId").asText(null),
-                      r.at("/instanceId").asText(null),
-                      r.at("/requesterId").asText(null),
-                      r.at("/status").asText(null),
-                      r.at("/position").asText(null),
-                      new FolioRequest.Instance(r.at("/instance/title").asText(null)),
-                      new FolioRequest.Item(
-                          r.at("/item/barcode").asText(null),
-                          r.at("/item/callNumber").asText(null),
-                          new FolioRequest.Item.Location(
-                              r.at("/item/location/name").asText(null),
-                              r.at("/item/location/code").asText(null))),
-                      new FolioRequest.Requester(
-                          r.at("/requester/barcode").asText(null),
-                          r.at("/requester/patronGroupGroup").asText(null)),
-                      toList(r.at("/tagList").elements()));
+                FolioRequest req =
+                    new FolioRequest(
+                        r.at("/id").asText(null),
+                        requestDate,
+                        r.at("/patronComments").asText(null),
+                        r.at("/itemId").asText(null),
+                        r.at("/instanceId").asText(null),
+                        r.at("/requesterId").asText(null),
+                        r.at("/status").asText(null),
+                        r.at("/position").asText(null),
+                        new FolioRequest.Instance(r.at("/instance/title").asText(null)),
+                        new FolioRequest.Item(
+                            r.at("/item/barcode").asText(null),
+                            r.at("/item/callNumber").asText(null),
+                            new FolioRequest.Item.Location(
+                                r.at("/item/location/name").asText(null),
+                                r.at("/item/location/code").asText(null))),
+                        new FolioRequest.Requester(
+                            r.at("/requester/barcode").asText(null),
+                            r.at("/requester/patronGroupGroup").asText(null)),
+                        toList(r.at("/tagList").elements()));
 
-              result.add(req);
-            });
+                result.add(req);
+              });
+    }
 
     return result;
   }

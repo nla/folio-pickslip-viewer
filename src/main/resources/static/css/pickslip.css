@@ -30,7 +30,7 @@ header nav {
     border-bottom-color: var(--folio-orange);
 }
 
-fieldset .row {s
+fieldset .row {
     margin-left: 0.5rem;
 }
 
@@ -72,7 +72,6 @@ label.mandatory:after {
     color:red;
     padding-left: 0.2em;
 }
-
 
 tr.visiting {
     background: #e0f3f4;
