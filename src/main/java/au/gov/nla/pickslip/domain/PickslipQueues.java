@@ -2,6 +2,7 @@ package au.gov.nla.pickslip.domain;
 
 import au.gov.nla.pickslip.StackLocations;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class PickslipQueues {
     public record Request(
         String id,
         Requester requester,
-        LocalDateTime requestDate,
+        ZonedDateTime requestDate,
         String patronComments,
         String patronGroup,
         String status,
@@ -242,7 +243,8 @@ public class PickslipQueues {
       FolioPickslip fps = findFolioPickslipByRequestId(folioPickslipsByServicePoint, req.id());
       ServicePoint sp = locationServicePointMap.get(req.item().location().code());
       if (sp == null) {
-        throw new IllegalStateException(String.format("Service Point null for request: %s", req));
+        log.error(String.format("Service Point null for request: %s (continuing)", req));
+        continue;
       }
       Pickslip pickslip =
           Pickslip.fromFolioPickSlipAndRequest(servicePointCodes, sp.code, fps, req);

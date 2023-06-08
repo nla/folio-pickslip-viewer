@@ -94,6 +94,7 @@ public class HomeController {
       return;
     }
 
+    // filter out visiting and anything that's not open-not-yet-filled.
     // sort by something that looks like a dewey number (or running number), then alphabetically
     var sorted =
         stackPickslips.stream()
@@ -101,49 +102,17 @@ public class HomeController {
                 p ->
                     (p.request().requestDate().isAfter(uptoPickslip.request().requestDate()))
                         || p.request().requestDate().isEqual(uptoPickslip.request().requestDate()))
+            .filter(
+                p ->
+                    !p.visiting()
+                        && PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED
+                            .getCode()
+                            .equalsIgnoreCase(p.request().status()))
             .sorted(
                 (Comparator.comparingDouble(
                         (PickslipQueues.Pickslip p) -> getDeweyish(p.item().callNumber()))
                     .thenComparing(p -> p.item().callNumber())))
             .toList();
-
-    /*
-    // sort: status; then by request date.  Head of list is most recent; "In transit" status at end.
-    for (var pickslips : servicePointPickslips.values()) {
-      pickslips.sort(
-              Comparator.comparing((PickslipQueues.Pickslip a) -> a.request.status)
-                      .thenComparing(a -> a.request.requestDate)
-                      .reversed());
-    }
-
-
-
-    Comparator<PickslipQueues.Pickslip> comparator = new Comparator<PickslipQueues.Pickslip>() {
-
-      //  	NL 582.1309945 G148 	-> 582.1309945
-      //   	N 2019-1537 -> 2019.1537
-      // ORAL TRC 3800 -> 0
-      // Ephemera (Trade catalogues) -> 0
-      // mfm X 650/reels 5,704-5,790. -> 0
-      private float extractDewy(String s) {
-        return 0;
-      }
-      @Override
-      public int compare(PickslipQueues.Pickslip p1, PickslipQueues.Pickslip p2) {
-        float c1 = extractDewy(p1.item().callNumber());
-        float c2 = extractDewy(p2.item().callNumber());
-        return Float.compare(c1, c2);
-      }
-    };
-
-
-    // pickslip.request().requestDate()
-
-    var sorted = stackPickslips.stream().filter(p -> p.request().requestDate().isBefore(uptoPickslip.request().requestDate())).sorted(
-      comparator
-    ).toList();
-
-    */
 
     pdfResponderService.generate(sos, sorted);
     response.flushBuffer();
@@ -155,6 +124,7 @@ public class HomeController {
       @RequestParam(required = false) String[] showOnly,
       Model model) {
 
+    model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
     model.addAttribute("stacks", filterStackLocations(showOnly));
     model.addAttribute("stack", stackLocations.getStackForCode(stackCode));
@@ -167,6 +137,7 @@ public class HomeController {
   @GetMapping({"", "/", "/home"})
   public String index(@RequestParam(required = false) String[] showOnly, Model model) {
 
+    model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
     model.addAttribute("stacks", filterStackLocations(showOnly));
     model.addAttribute("queues", pickslipQueues);
@@ -189,12 +160,5 @@ public class HomeController {
       }
     }
     return (stackList != null && stackList.size() > 0) ? stackList : stackLocations.getStacks();
-  }
-
-  // label printing POC - move elsewhere..
-  @GetMapping(path = "printLabel")
-  public String printLabel(@RequestParam("data") String data, Model model) throws Exception {
-    model.addAttribute("data", data);
-    return "label";
   }
 }

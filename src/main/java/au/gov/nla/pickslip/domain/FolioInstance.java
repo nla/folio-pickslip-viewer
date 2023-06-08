@@ -10,7 +10,5 @@ public record FolioInstance(
     String editions, // array flattened
     String series, // array flattened
     String accessConditions,
-    String termsOfUse
-
-    // spine label not mapped yet in FOLIO
-    ) {}
+    String termsOfUse,
+    String spineLabel) {}

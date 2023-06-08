@@ -3,7 +3,7 @@
 <head th:replace="~{common/general :: htmlhead('Pickslips')}" />
 
 <body class="bg-dark">
-<header th:replace="~{common/general :: header(${stacks}, ${showOnly})}" />
+<header th:replace="~{common/general :: header(${stacks}, ${showOnly}, ${lastSuccess}, ${stack})}" />
 
 <main>
 
@@ -25,26 +25,23 @@
                         <thead class="thead-light">
                         <tr>
                             <th scope="col">Date</th>
-                            <th scope="col">Position</th>
                             <th scope="col">Call Number</th>
-                            <th scope="col">Patron Comments</th>
                             <th scope="col">Status</th>
                             <th scope="col">Patron Group</th>
                             <th scope="col">Title</th>
                             <th scope="col">Barcode</th>
+                            <th scope="col">Print</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="s : ${visitors}">
                             <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
-                            <td>[[${s.request.position}]]</td>
                             <td>
                                 <a th:target="_blank"
                                    th:href="${@environment.getProperty('folio.request-view-prefix')}
                                            +${s.request.id}
                                            +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
                             </td>
-                            <td>[[${s.request.patronComments}]]</td>
                             <td> <span class="nobreak fs-small px-2 py-1 fw-lighter rounded-4"
                                        th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
                                             [[${s.request.status}]]
@@ -52,6 +49,12 @@
                             <td>[[${s.request.patronGroup}]]</td>
                             <td>[[${s.item.title}]]</td>
                             <td class="text-muted fw-lighter">[[${s.item.barcode}]]</td>
+                            <td class="nobreak">
+                                <a th:if="${s.request.isNotYetFilled()}"
+                                   th:href="@{/export/{rid}(rid=${s.request.id})}"
+                                   title="Print"
+                                   class="action bi-printer"></a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

@@ -20,7 +20,7 @@
     <base th:href="@{/}" />
 </head>
 
-<header th:fragment="header(stacks, showOnly)" id="header">
+<header th:fragment="header(stacks, showOnly, lastSuccess, activeStack)" id="header">
     <nav class="navbar navbar-expand-md navbar-dark">
         <a class="navbar-brand"
            th:href="${showOnly} ? @{/home(showOnly=${showOnly})}
@@ -31,14 +31,51 @@
             <ul class="navbar-nav">
                 <li th:each="loc : ${stacks}" class="nav-item" >
                     <a class="nav-link"
-                       th:classappend="'stack-'+${loc.code}"
+                       th:classappend="${'stack-'+loc.code + ' ' + (activeStack?.code == loc.code ? 'active': '')}"
                        th:href="${showOnly} ? @{/location/{code}(code = ${loc.code},showOnly=${showOnly})}
                                             : @{/location/{code}(code = ${loc.code})}"
                        th:text="${loc.label}"/>
                 </li>
             </ul>
         </div>
+        <ul class="navbar-nav">
+            <li class="nav-item text-end" >
+                <span class="nav-link">
+                    [[${#temporals.format(lastSuccess, 'H:mm:ss')} ?: '-']]
+                </span>
+            </li>
+            <li>
+                <span class="nav-link">
+                    <span class="refresh form-check form-switch">
+                        <input class="form-check-input" type="checkbox" onclick="setAuto()" role="switch" autocomplete="off" id="autoRefresh" checked>
+                        <label class="form-check-label" for="autoRefresh"><span class="m-1 bi-arrow-clockwise"></span></label>
+                    </span>
+                </span>
+            </li>
+        </ul>
     </nav>
+
+    <script>
+        function setAuto() {
+            if (!event.target.checked && refreshTimeout) {
+                clearTimeout(refreshTimeout);
+                refreshTimeout = null;
+            }
+            if (event.target.checked && !refreshTimeout) {
+                setTimeout(() => location.reload(), 60000);
+            }
+        }
+
+        // default is checked!
+        var refreshTimeout = setTimeout(() => location.reload(), 60000);
+
+    </script>
+
+    <div id="last-updated">
+        <span class="bi-clock"></span>
+        <span class="m-1">[[${#temporals.format(lastSuccess, 'H:mm:ss')} ?: '-']]</span>
+    </div>
+
 </header>
 
 <body>

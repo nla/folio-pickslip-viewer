@@ -2,7 +2,6 @@ package au.gov.nla.pickslip.service;
 
 import au.gov.nla.pickslip.domain.PickslipQueues;
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code128Writer;
@@ -30,8 +29,6 @@ public class PdfResponderService {
 
   @Autowired SpringTemplateEngine templateEngine;
 
-  @Autowired PickslipQueues pickslipQueues;
-
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
   private ITextRenderer renderer;
@@ -43,9 +40,6 @@ public class PdfResponderService {
         new ResourceLoaderUserAgent(renderer.getOutputDevice());
     resourceLoaderUA.setSharedContext(renderer.getSharedContext());
     renderer.getSharedContext().setUserAgentCallback(resourceLoaderUA);
-    renderer
-        .getFontResolver()
-        .addFont("pdf/fonts/LibreBarcode128Text-Regular.ttf", BaseFont.IDENTITY_H, true);
   }
 
   public static String generateCode128BarcodeImage(String barcodeText) throws Exception {
@@ -56,11 +50,7 @@ public class PdfResponderService {
 
     Code128Writer barcodeWriter = new Code128Writer();
 
-    Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
-    hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-    hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
-
-    BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.CODE_128, 200, 50, hints);
+    BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.CODE_128, 150, 50);
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     MatrixToImageWriter.writeToStream(bitMatrix, "png", bos);
@@ -82,7 +72,7 @@ public class PdfResponderService {
 
       for (PickslipQueues.Pickslip pickslip : pickslipList) {
 
-        String image = null;
+        String image;
         try {
           image = generateCode128BarcodeImage(pickslip.item().barcode());
         } catch (Exception e) {

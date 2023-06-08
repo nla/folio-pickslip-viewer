@@ -1,11 +1,11 @@
 package au.gov.nla.pickslip.domain;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public record FolioRequest(
     String id,
-    LocalDateTime requestDate,
+    ZonedDateTime requestDate,
     String patronComments,
     String itemId,
     String instanceId,

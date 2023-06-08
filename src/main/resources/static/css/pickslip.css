@@ -8,12 +8,14 @@
 	--stack-CENT-SP: #fd80be;
 	--stack-WEST-SP: #fdf080;
 	--stack-LG1-SP: #80a0fd;
+	--stack-NEWS-SP: #3ca7c8;
+	--stack-SPEC1-SP: #3cc8c8;
+	--stack-SPEC2-SP: #3cc8b4;
 	--stack-HUME-SP: #b880fd;
-	--stack-MITCHELL-SP: #b880fd;
+	--stack-MITCHELL-SP: #9f58f7;
 	--stack-PICMSS-SP: #80a0fd;
-	--stack-3RD-SP: #a080fd;
+	--stack-ASIAN-SP: #a080fd;
 }
-
 
 .action {
     padding: 0.25rem 0.75rem;
@@ -77,17 +79,34 @@ tr.visiting {
     background: #e0f3f4;
 }
 
+#last-updated {
+    position: fixed;
+    font-size: 150%;
+    color: var(--logo-orange);
+    opacity: 80%;
+    bottom: 1em;
+    right: 2em;
+    font-weight: bold;
+}
+
+.refresh {
+    margin-right: 0.5em;
+}
+
 /* -- header - navlinks -- */
 
 .nav-link.stack-LAKE-SP:focus,     .nav-link.stack-LAKE-SP:hover     { color: var(--stack-LAKE-SP); }
 .nav-link.stack-EAST-SP:focus,     .nav-link.stack-EAST-SP:hover     { color: var(--stack-EAST-SP); }
 .nav-link.stack-CENT-SP:focus,     .nav-link.stack-CENT-SP:hover     { color: var(--stack-CENT-SP); }
 .nav-link.stack-WEST-SP:focus,     .nav-link.stack-WEST-SP:hover     { color: var(--stack-WEST-SP); }
-.nav-link.stack-LG1:focus,         .nav-link.stack-LG1-SP:hover      { color: var(--stack-LG1-SP); }
+.nav-link.stack-LG1-SP:focus,      .nav-link.stack-LG1-SP:hover      { color: var(--stack-LG1-SP); }
+.nav-link.stack-NEWS-SP:focus,     .nav-link.stack-NEWS-SP:hover     { color: var(--stack-NEWS-SP); }
+.nav-link.stack-SPEC1-SP:focus,    .nav-link.stack-SPEC1-SP:hover    { color: var(--stack-SPEC1-SP); }
+.nav-link.stack-SPEC2-SP:focus,    .nav-link.stack-SPEC2-SP:hover    { color: var(--stack-SPEC2-SP); }
 .nav-link.stack-MITCHELL-SP:focus, .nav-link.stack-MITCHELL-SP:hover { color: var(--stack-MITCHELL-SP); }
 .nav-link.stack-HUME-SP:focus,     .nav-link.stack-HUME-SP:hover     { color: var(--stack-HUME-SP); }
 .nav-link.stack-PICMSS-SP:focus,   .nav-link.stack-PICMSS-SP:hover   { color: var(--stack-PICMSS-SP); }
-.nav-link.stack-3RD-SP:focus,      .nav-link.stack-3RD-SP:hover      { color: var(--stack-3RD-SP); }
+.nav-link.stack-ASIAN-SP:focus,    .nav-link.stack-ASIAN-SP:hover    { color: var(--stack-ASIAN-SP); }
 
 /* -- stacks - shadows -- */
 div.stack-LAKE-SP {
@@ -115,6 +134,21 @@ div.stack-LG1-SP {
               0 0 30px 0px var(--stack-LG1-SP) !important
 }
 
+div.stack-NEWS-SP {
+ box-shadow : 0 0 5px  2px var(--stack-NEWS-SP),
+              0 0 30px 0px var(--stack-NEWS-SP) !important
+}
+
+div.stack-SPEC1-SP {
+ box-shadow : 0 0 5px  2px var(--stack-SPEC1-SP),
+              0 0 30px 0px var(--stack-SPEC1-SP) !important
+}
+
+div.stack-SPEC2-SP {
+ box-shadow : 0 0 5px  2px var(--stack-SPEC2-SP),
+              0 0 30px 0px var(--stack-SPEC2-SP) !important
+}
+
 div.stack-MITCHELL-SP {
  box-shadow : 0 0 5px  2px var(--stack-MITCHELL-SP),
               0 0 30px 0px var(--stack-MITCHELL-SP) !important
@@ -130,9 +164,9 @@ div.stack-PICMSS-SP {
               0 0 30px 0px var(--stack-PICMSS-SP) !important
 }
 
-div.stack-3RD-SP {
- box-shadow : 0 0 5px  2px var(--stack-3RD-SP),
-              0 0 30px 0px var(--stack-3RD-SP) !important
+div.stack-ASIAN-SP {
+ box-shadow : 0 0 5px  2px var(--stack-ASIAN-SP),
+              0 0 30px 0px var(--stack-ASIAN-SP) !important
 }
 
 /* -- index page - all queues -- */
@@ -142,7 +176,10 @@ tr.stack-EAST-SP     { border-left: 10px solid var(--stack-EAST-SP); }
 tr.stack-CENT-SP     { border-left: 10px solid var(--stack-CENT-SP); }
 tr.stack-WEST-SP     { border-left: 10px solid var(--stack-WEST-SP); }
 tr.stack-LG1-SP      { border-left: 10px solid var(--stack-LG1-SP); }
+tr.stack-NEWS-SP     { border-left: 10px solid var(--stack-NEWS-SP); }
+tr.stack-SPEC1-SP    { border-left: 10px solid var(--stack-SPEC1-SP); }
+tr.stack-SPEC2-SP    { border-left: 10px solid var(--stack-SPEC2-SP); }
 tr.stack-MITCHELL-SP { border-left: 10px solid var(--stack-MITCHELL-SP); }
 tr.stack-HUME-SP     { border-left: 10px solid var(--stack-HUME-SP); }
 tr.stack-PICMSS-SP   { border-left: 10px solid var(--stack-PICMSS-SP); }
-tr.stack-3RD-SP      { border-left: 10px solid var(--stack-3RD-SP); }
+tr.stack-ASIAN-SP    { border-left: 10px solid var(--stack-ASIAN-SP); }

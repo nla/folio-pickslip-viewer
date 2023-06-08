@@ -9,7 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -191,16 +192,20 @@ public class FolioService {
           .forEach(
               r -> {
                 var requestDateNode = r.at("/requestDate");
-                LocalDateTime requestDate =
+
+                ZonedDateTime requestDate =
                     requestDateNode.isNull()
                         ? null
-                        : LocalDateTime.parse(
+                        : ZonedDateTime.parse(
                             requestDateNode.asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+                ZonedDateTime localRequestDate =
+                    requestDate.withZoneSameInstant(ZoneId.systemDefault());
 
                 FolioRequest req =
                     new FolioRequest(
                         r.at("/id").asText(null),
-                        requestDate,
+                        localRequestDate,
                         r.at("/patronComments").asText(null),
                         r.at("/itemId").asText(null),
                         r.at("/instanceId").asText(null),

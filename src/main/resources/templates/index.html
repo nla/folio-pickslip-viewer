@@ -3,14 +3,14 @@
 <head th:replace="~{common/general :: htmlhead('Pickslips')}" />
 
 <body class="bg-dark">
-<header th:replace="~{common/general :: header(${stacks}, ${showOnly})}" />
+<header th:replace="~{common/general :: header(${stacks}, ${showOnly}, ${lastSuccess}, null)}" />
 
 <main>
 
     <div class="p-3">
         <div class="container-fluid bg-light p-2 rounded">
 
-            <header th:replace="~{common/general :: admintitle('Pickslip Requests', 'All Requests')}" />
+            <header th:replace="~{common/general :: admintitle('Pickslips', 'All Requests')}" />
 
             <div class="bg-white m-2 p-4 border border-1 rounded">
 
@@ -25,6 +25,7 @@
                         <th scope="col">Patron Group</th>
                         <th scope="col">Title</th>
                         <th scope="col">Barcode</th>
+                        <th scope="col">Print/Multi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,7 +34,7 @@
                             <th:block th:with="queue = ${queues.getPickslipsForStack(loc.code)}">
 
                                 <tr class="heading bg-light text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
-                                    <td colspan="6" class="pt-3 px-2">
+                                    <td colspan="7" class="pt-3 px-2">
                                         [[${loc.label}]]
                                     </td>
                                 </tr>
@@ -55,6 +56,16 @@
                                     <td class="nobreak">[[${s.request.patronGroup}]]</td>
                                     <td>[[${s.item.title}]]</td>
                                     <td class="text-muted fw-lighter">[[${s.item.barcode}]]</td>
+                                    <td class="nobreak">
+                                        <a th:if="${s.request.isNotYetFilled()}"
+                                           th:href="@{/export/{rid}(rid=${s.request.id})}"
+                                           title="Print"
+                                           class="action bi-printer"></a>
+                                        <a th:if="${s.request.isNotYetFilled()}"
+                                           th:href="@{/bulkprint/{stack}(stack=${loc.code}, upToId=${s.request.id})}"
+                                           title="Print"
+                                           class="action bi-arrow-bar-up"></a>
+                                    </td>
                                 </tr>
 
                             </th:block>

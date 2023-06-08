@@ -6,29 +6,38 @@ stacklocations:
       code: LAKE-SP
       label: Lakeside
     -
-      code: EAST-SP
-      label: East
-    -
       code: CENT-SP
       label: Central
+    -
+      code: EAST-SP
+      label: East
     -
       code: WEST-SP
       label: West
     -
+      code: ASIAN-SP
+      label: Asian Collections
+    -
       code: LG1-SP
-      label: LG-1
+      label: LG1 General Collections
     -
-      code: MITCHELL-SP
-      label: Mitchell
+      code: NEWS-SP
+      label: Newspapers
     -
-      code: HUME-SP
-      label: Hume
+      code: SPEC1-SP
+      label: Specials 1
+    -
+      code: SPEC2-SP
+      label: Specials 2
     -
       code: PICMSS-SP
       label: Pictures & Manuscripts
     -
-      code: 3RD-SP
-      label: Third Floor
+      code: HUME-SP
+      label: Hume
+    -
+      code: MITCHELL-SP
+      label: Mitchell
 
 #  NMRR-SP
 #  PROC-SP

@@ -28,8 +28,12 @@ public class FolioAsyncService {
   @Value("${folio.note-type.terms-of-use}")
   private String folioTermsOfUseNoteType;
 
+  @Value("${folio.note-type.spine-label}")
+  private String folioSpineLabelNoteType;
+
   String folioAccessConditionsUuid;
   String folioTermsOfUseNoteUuid;
+  String folioSpineLabelNoteTypeUuid;
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -52,12 +56,20 @@ public class FolioAsyncService {
         folioInstanceNoteTypesAPI.resolveNoteType(folioAccessConditionsNoteType);
     this.folioTermsOfUseNoteUuid =
         folioInstanceNoteTypesAPI.resolveNoteType(folioTermsOfUseNoteType);
+    this.folioSpineLabelNoteTypeUuid =
+        folioInstanceNoteTypesAPI.resolveNoteType(folioSpineLabelNoteType);
 
-    if (folioAccessConditionsUuid == null
-        || folioAccessConditionsUuid.isBlank()
-        || folioTermsOfUseNoteUuid == null
-        || folioTermsOfUseNoteUuid.isBlank()) {
-      throw new IllegalStateException("Can't initialize: can't resolve instance note types");
+    if (folioAccessConditionsUuid == null || folioAccessConditionsUuid.isBlank()) {
+      throw new IllegalStateException(
+          "Can't initialize: can't resolve instance note type - access conditions");
+    }
+    if (folioTermsOfUseNoteUuid == null || folioTermsOfUseNoteUuid.isBlank()) {
+      throw new IllegalStateException(
+          "Can't initialize: can't resolve instance note types - terms of use");
+    }
+    if (folioSpineLabelNoteTypeUuid == null || folioSpineLabelNoteTypeUuid.isBlank()) {
+      throw new IllegalStateException(
+          "Can't initialize: can't resolve instance note types - spine label");
     }
   }
 
@@ -108,7 +120,8 @@ public class FolioAsyncService {
             flatten(n, "/editions", null),
             flatten(n, "/series", "/value"),
             extractNote(n, this.folioAccessConditionsUuid),
-            extractNote(n, this.folioTermsOfUseNoteUuid));
+            extractNote(n, this.folioTermsOfUseNoteUuid),
+            extractNote(n, this.folioSpineLabelNoteTypeUuid));
     return CompletableFuture.completedFuture(folioInstance);
   }
 }

@@ -1,10 +1,10 @@
- html {
-   font-size:12px;
- }
+html {
+    font-size:10pt;
+}
 
 @page {
     size: A4;
-    margin: 0.5in;
+    margin: 0.25in;
 }
 
 .pickslip {
@@ -13,34 +13,102 @@
 
 .patron-copy {
     position: fixed;
-    width: 100%;
-    top: 55%;
+    right: 0%;
+    left: 0%;
+    bottom: 1%;  /* border is chopped at 0! */
+    height: 47%; /* space around perforation */
 }
 
 .shelf-copy {
     position: fixed;
-    width: 100%;
+    right: 0%;
+    left: 0%;
+    height: 47%;
+    top: 1%;  /* mirror the bottom of patron-copy */
+}
+
+.content {
+    margin: 1em;
+}
+
+.lhs {
+    position: absolute;
     top: 0%;
+    height: 100%;
+    width: 35%;
+}
+
+.rhs-1 {
+    background-color: white;
+    position: absolute;
+    right: 0%;
+    left: 35%;
+    height: 30%;
+    z-index: 10;
+}
+
+.rhs-2 {
+    background-color: white;
+    position: absolute;
+    right: 0%;
+    left: 35%;
+    top: 20%;
+    height: 40%;
+    z-index: 10;
+}
+
+.rhs-3 {
+    background-color: white;
+    position: absolute;
+    right: 0%;
+    left: 35%;
+    top: 60%;
+    height: 40%;
+    z-index: 15;
 }
 
 .w100 {
     width: 100%;
 }
 
+.w70 {
+    width: 70%;
+}
+
+.w60 {
+    width: 60%;
+}
+
 .w50 {
     width: 50%;
 }
 
- .w70 {
-     width: 70%;
- }
+.w40 {
+    width: 40%;
+}
 
- .w30 {
-     width: 30%;
- }
+.w30 {
+    width: 30%;
+}
+
+.h30 {
+    height: 30%;
+}
+
+.fixed {
+    table-layout: fixed;
+}
+
+.border {
+    border: 0.5pt solid;
+}
 
 h1 {
     font-size: large;
+}
+
+.font-large {
+    font-size: 14pt;
 }
 
 .align-top {
@@ -59,6 +127,12 @@ h1 {
     text-align: center;
 }
 
+.barcode {
+    padding: 1em 0 2em 0;
+    display:inline-block;
+    text-align: center;
+}
+
 .label {
     white-space: nowrap;
     text-align: right;
@@ -68,6 +142,7 @@ h1 {
 }
 
 .label-left {
+    padding-left: 0;
     white-space: nowrap;
     text-align: left;
     vertical-align: top;
@@ -75,30 +150,60 @@ h1 {
     width: 10%;
 }
 
-p.spaced-above {
-    padding-top: 1em;
+table {
+    border-collapse: collapse;
 }
 
+
+p.spaced-above {
+    margin-top: 6pt;
+}
+
+p.spaced-above-xl {
+    margin-top: 24pt;
+}
+
+p.spaced-below-xl {
+    margin-bottom: 24pt;
+}
+
+
 tr.spaced-below>td {
-    padding-bottom: 1em;
+    margin-bottom: 6pt;
 }
 
 tr.spaced-above>td {
-    padding-top: 1em;
+    margin-top: 6pt;
 }
 
 .request-info {
-    padding: 0.5em 0;
+    padding: 3pt 0;
 }
 
-.patron-info {
-    padding: 0.25em 0;
+.shelf-copy .patron-info {
+    padding: 24pt 0 1em 0;
+}
+
+.shelf-copy .access-info {
+    padding: 6pt 0;
+}
+
+.patron-copy .patron-info {
+    padding: 0 0 6pt 0;
+}
+
+.patron-copy .access-info {
+    padding: 6pt 0;
+}
+
+.patron-copy .ms-info {
+    padding: 6pt 0;
 }
 
 .serial-info {
-    margin-top: 1em;
-    margin-bottom: 1em;
-    padding: 1em 0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem 0;
 }
 
 .heavy-font {
@@ -110,9 +215,9 @@ tr.spaced-above>td {
 }
 
 .item-info {
-    margin-top: 2em;
+    margin-top: 2rem;
     border: 1px solid;
-    padding: 0.25em;
+    padding: 3pt;
 }
 
 .barcode128 {
@@ -122,14 +227,20 @@ tr.spaced-above>td {
 }
 
 .barcodetext {
-    font-size: 0.8em;
+    margin-top: 0;
+    font-size: 6pt;
     font-family: monospace, monospace;
 }
 
 html {
-    font-family: sans-serif;
+    font-family: serif;
 }
 
 p {
-    margin: 0;
+    margin: 3pt 0;
+}
+
+p.snug {
+    margin-top: 0;
+    margin-bottom: 0;
 }
