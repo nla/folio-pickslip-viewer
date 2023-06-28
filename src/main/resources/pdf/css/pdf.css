@@ -1,5 +1,5 @@
 html {
-    font-size:10pt;
+    font-size:11pt;
 }
 
 @page {
@@ -108,7 +108,7 @@ h1 {
 }
 
 .font-large {
-    font-size: 14pt;
+    font-size: 18pt;
 }
 
 .align-top {
@@ -154,7 +154,6 @@ table {
     border-collapse: collapse;
 }
 
-
 p.spaced-above {
     margin-top: 6pt;
 }
@@ -166,7 +165,6 @@ p.spaced-above-xl {
 p.spaced-below-xl {
     margin-bottom: 24pt;
 }
-
 
 tr.spaced-below>td {
     margin-bottom: 6pt;
@@ -181,7 +179,7 @@ tr.spaced-above>td {
 }
 
 .shelf-copy .patron-info {
-    padding: 24pt 0 1em 0;
+    padding: 0 0 24pt 0;
 }
 
 .shelf-copy .access-info {
@@ -228,7 +226,7 @@ tr.spaced-above>td {
 
 .barcodetext {
     margin-top: 0;
-    font-size: 6pt;
+    font-size: 8pt;
     font-family: monospace, monospace;
 }
 

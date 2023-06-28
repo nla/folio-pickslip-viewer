@@ -10,7 +10,7 @@
     <div class="p-3">
         <div class="container-fluid bg-light p-2 rounded" th:classappend="'stack-'+${stack.code}">
 
-            <header th:replace="~{common/general :: admintitle(${stack.label}, 'View and print pickslips')}" />
+            <header th:replace="~{common/general :: admintitle(${stack.label})}" />
 
             <div th:if="${visitors?.size() > 0}" class="bg-white m-2 p-4 border border-1 rounded">
 
@@ -29,6 +29,7 @@
                             <th scope="col">Status</th>
                             <th scope="col">Patron Group</th>
                             <th scope="col">Title</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Barcode</th>
                             <th scope="col">Print</th>
                         </tr>
@@ -46,9 +47,14 @@
                                        th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
                                             [[${s.request.status}]]
                                         </span></td>
+
                             <td>[[${s.request.patronGroup}]]</td>
                             <td>[[${s.item.title}]]</td>
-                            <td class="text-muted fw-lighter">[[${s.item.barcode}]]</td>
+
+                            <td class="nobreak fw-lighter">[[(${s.request.requester.firstName} ?: '-') + ' ' +
+                                                             (${s.request.requester.lastName} ?: '-')]]</td>
+                            <td class="fw-lighter">[[${s.item.barcode}]]</td>
+
                             <td class="nobreak">
                                 <a th:if="${s.request.isNotYetFilled()}"
                                    th:href="@{/export/{rid}(rid=${s.request.id})}"
@@ -67,6 +73,7 @@
                 <div class="row">
                     <legend class="col">
                         <span class="bi-list"/><span class="ms-1">Requests</span>
+                        <span class="ms-1 fw-lighter" th:if="${queue?.size()}">([[${queue?.size()}]])</span>
                     </legend>
                 </div>
 
@@ -81,13 +88,17 @@
                             <th scope="col">Status</th>
                             <th scope="col">Patron Group</th>
                             <th scope="col">Title</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Barcode</th>
                             <th scope="col">Print/Multi</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="s : ${queue}" th:classappend="${s.visiting ? 'visiting' : ''}" >
-                            <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
+                        <tr th:each="s : ${queue}" th:classappend="${(s.visiting ? 'visiting ' : '') +
+                                                                     (s.parked ? 'parked ' : '') +
+                                                                     (s.request.isRequestDateEvenThirty ? 'even30' : 'odd30')}">
+
+                        <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
                             <td>
                                 <a th:target="_blank"
                                    th:href="${@environment.getProperty('folio.request-view-prefix')}
@@ -99,8 +110,12 @@
                                             [[${s.request.status}]]
                                         </span></td>
                             <td class="nobreak">[[${s.request.patronGroup}]]</td>
+
                             <td>[[${s.item.title}]]</td>
-                            <td class="text-muted fw-lighter">[[${s.item.barcode}]]</td>
+                            <td class="nobreak fw-lighter">[[(${s.request.requester.firstName} ?: '-') + ' ' +
+                                                             (${s.request.requester.lastName} ?: '-')]]</td>
+
+                            <td class="fw-lighter">[[${s.item.barcode}]]</td>
                             <td class="nobreak">
                                 <a th:if="${s.request.isNotYetFilled()}"
                                    th:href="@{/export/{rid}(rid=${s.request.id})}"

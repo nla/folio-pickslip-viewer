@@ -1,0 +1,188 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="file:///home/orange/src/nla/folio-pickslip-viewer/src/main/resources/pdf/css/pdf2.css"/>
+</head>
+
+<div class="pickslip">
+
+    <div class="shelf-copy">
+
+        <div class="lhs border">
+            <div class="content">
+                <div class="barcode">
+                    <img class="barcode128" th:src="${barcode64}"/>
+                    <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'">12345</p>
+                </div>
+                <p th:text="${pickslip.item.callNumber}" >callnumber</p>
+                <p th:text="${pickslip.item.title} ?: '-'">item title </p>
+                <table>
+                    <tr class="spaced-above">
+                        <td class="label-left">Author:</td>
+                        <td th:text="${pickslip.item.primaryContributor} ?: '-'">primaryContributor </td>
+                    </tr>
+                </table>
+
+                <div class="patron-info font-large">
+                    <p>
+                        <span class ="heavy-font" th:text="${pickslip.request.requester.lastName} ?: '-'" >lastname</span>,
+                        <span th:text="${pickslip.request.requester.firstName} ?: '-'" >firstName</span>
+                    </p>
+                    <p class="heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'">MRR</p>
+                </div>
+
+                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'">locspec</p>
+
+                <p class="font-large spaced-above" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}">12/12/2023 11pm</p>
+
+            </div>
+        </div>
+
+        <div class="rhs-1 border">
+            <div class="content">
+                <p class="heavy-font" th:text="${pickslip.item.title} ?: '-'">item title goes here</p>
+                <table>
+                    <tr class="spaced-above">
+                        <td class="label-left">Author:</td>
+                        <td th:text="${pickslip.item.primaryContributor} ?: '-'">Author deets</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="rhs-2 border">
+            <div class="content">
+                <table class="w100">
+                    <tr> <td class="label-left">Bib Id:</td>    <td th:text="${instance.hrid} ?: '-'">1234321</td> </tr>
+                    <tr> <td class="label-left">Spine:</td>     <td th:text="'(Not implemented)'">(Not implemented)</td> </tr>
+                    <tr> <td class="label-left">Inprint:</td>   <td th:text="(${instance.publicationPlace} ?: '-') + ' ' +
+                                                                                    (${instance.publicationDateOfPublication} ?: '-')">Inprint</td> </tr>
+                    <tr> <td class="label-left">Collation:</td> <td th:text="${instance.physicalDescriptions} ?: '-'">Collation</td> </tr>
+                    <tr> <td class="label-left">Edition:</td>   <td th:text="${instance.editions} ?: '-'">Edition</td> </tr>
+                    <tr> <td class="label-left">Series:</td>    <td th:text="${instance.series} ?: '-'">Series</td> </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="rhs-3 border">
+            <div class="content">
+
+                <table>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td th:text="${pickslip.item.yearCaption} ?: '-'">1986</td> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td th:text="${pickslip.item.enumeration} ?: '-'">Enumeration</td> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td th:text="${pickslip.item.chronology} ?: '-'">Chronology</td> </tr>
+                </table>
+
+                <table>
+                    <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'">Copy</td> </tr>
+                </table>
+
+                <div class="access-info">
+                    <table>
+                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${instance.accessConditions} ?: '-'">Access</td> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${instance.termsOfUse} ?: '-'">TermsOfUse</td> </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="patron-copy">
+
+        <div class="lhs border">
+            <div class="content">
+                <p class="heavy-font font-large" th:text="${pickslip.item.callNumber}">MS Call Number</p>
+                <p class="heavy-font" th:text="${pickslip.item.title} ?: '-'">Item Title</p>
+                <table>
+                    <tr class="spaced-above">
+                        <td class="label-left">Author:</td>
+                        <td th:text="${pickslip.item.primaryContributor} ?: '-'">Primary Contrib</td>
+                    </tr>
+                </table>
+
+                <div class="ms-info">
+                    <p class="snug" th:text="${pickslip.item.yearCaption}">1965</p>
+                    <p class="snug" th:text="${pickslip.item.enumeration}">enumeration</p>
+                    <p class="snug" th:text="${pickslip.item.chronology}">Chronology</p>
+                </div>
+
+                <div class="barcode">
+                    <img class="barcode128" th:src="${barcode64}"/>
+                    <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'" >barcode1234</p>
+                </div>
+
+                <div class="patron-info">
+                    <p>
+                        <span th:text="(${pickslip.request.requester.firstName} ?: '-') + ' ' +
+                                       (${pickslip.request.requester.lastName} ?: '-')">First, Lastname</span>
+                    </p>
+                    <p class="heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'">MRR</p>
+                </div>
+
+                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'">Stack Loc</p>
+
+                <p class="spaced-above" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}">dd-mmm-yyyy hh:mm:ss</p>
+
+                <p class="heavy-font font-large spaced-above" th:text="${pickslip.item.callNumber}">MUS call number</p>
+            </div>
+        </div>
+
+        <div class="rhs-1 border">
+            <div class="content">
+                <p class="heavy-font" th:text="${pickslip.item.title} ?: '-'">Item Tiele</p>
+                <table>
+                    <tr class="spaced-above">
+                        <td class="label-left">Author:</td>
+                        <td th:text="${pickslip.item.primaryContributor} ?: '-'">Primary Contrib</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="rhs-2 border">
+            <div class="content">
+                <table class="w100">
+                    <tr> <td class="label-left">Bib Id:</td>    <td th:text="${instance.hrid} ?: '-'">bibID</td> </tr>
+                    <tr> <td class="label-left">Spine:</td>     <td th:text="'(Not implemented)'">Not Implemented</td></tr>
+                    <tr> <td class="label-left">Inprint:</td>   <td th:text="(${instance.publicationPlace} ?: '-') + ' ' +
+                                                                                    (${instance.publicationDateOfPublication} ?: '-')">Inprint</td></tr>
+                    <tr> <td class="label-left">Collation:</td> <td th:text="${instance.physicalDescriptions} ?: '-'">Collation</td> </tr>
+                    <tr> <td class="label-left">Edition:</td>   <td th:text="${instance.editions} ?: '-'">Edition</td></tr>
+                    <tr> <td class="label-left">Series:</td>    <td th:text="${instance.series} ?: '-'">Series</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="rhs-3 border">
+            <div class="content">
+
+                <table>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td th:text="${pickslip.item.yearCaption} ?: '-'">1945</td> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td th:text="${pickslip.item.enumeration} ?: '-'">enumer</td> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td th:text="${pickslip.item.chronology} ?: '-'">chronology</td> </tr>
+                </table>
+
+                <table>
+                    <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'">Copy</td> </tr>
+                </table>
+
+                <div class="access-info">
+                    <table>
+                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${instance.accessConditions} ?: '-'">AccessCond</td> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${instance.termsOfUse} ?: '-'">Terms of Use</td> </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</html>

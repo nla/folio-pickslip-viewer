@@ -79,6 +79,14 @@ tr.visiting {
     background: #e0f3f4;
 }
 
+tr.parked {
+    background: #eed7bf;
+}
+
+tr.parked.visiting {
+    background: #ddc0a2;
+}
+
 #last-updated {
     position: fixed;
     font-size: 150%;
@@ -91,6 +99,14 @@ tr.visiting {
 
 .refresh {
     margin-right: 0.5em;
+}
+
+tr.even30 {
+    border-right: 4px solid var(--bs-gray-200);
+}
+
+tr.odd30 {
+    border-right: 4px solid var(--bs-gray-500);
 }
 
 /* -- header - navlinks -- */

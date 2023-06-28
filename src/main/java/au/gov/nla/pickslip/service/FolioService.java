@@ -61,7 +61,7 @@ public class FolioService {
 
   public List<FolioServicePoint> getFolioServicePoints() throws IOException {
 
-    JsonNode n = new FOLIOServicePointRetrieverAPI(folioOkapiCredentials).getServicePoints();
+    JsonNode n = folioApiGetServicePoints();
 
     if (n == null) {
       log.debug("No service points found.");
@@ -87,7 +87,8 @@ public class FolioService {
   }
 
   public List<FolioLocation> getFolioLocations() throws IOException {
-    JsonNode n = new FOLIOLocationsRetrieverAPI(folioOkapiCredentials).getLocations();
+
+    JsonNode n = folioApiGetFolioLocations();
 
     if (n == null) {
       log.debug("No locations found.");
@@ -129,9 +130,7 @@ public class FolioService {
 
   public List<FolioPickslip> getPickslipsForServicePoint(String id) throws IOException {
 
-    JsonNode n =
-        new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials)
-            .getPickslipsForServicePoint(id, folioPickslipsLimit);
+    JsonNode n = folioApiGetPickslipsForServicePoint(id, folioPickslipsLimit);
 
     if (n == null) {
       log.debug("No pickslips for {}", id);
@@ -177,13 +176,7 @@ public class FolioService {
 
   public List<FolioRequest> getFolioRequests() throws IOException {
 
-    JsonNode n =
-        new FOLIORequestsRetrieverAPI(folioOkapiCredentials)
-            .getRequestsByStatus(
-                List.of(
-                    PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED.getCode(),
-                    PickslipQueues.Pickslip.Request.Status.OPEN_IN_TRANSIT.getCode()),
-                folioRequestsLimit);
+    JsonNode n = folioApiGetRequests();
 
     ArrayList<FolioRequest> result = new ArrayList<>();
 
@@ -229,5 +222,30 @@ public class FolioService {
     }
 
     return result;
+  }
+
+  // for spy / mock accessibility:
+
+  protected JsonNode folioApiGetServicePoints() throws IOException {
+    return new FOLIOServicePointRetrieverAPI(folioOkapiCredentials).getServicePoints();
+  }
+
+  protected JsonNode folioApiGetFolioLocations() throws IOException {
+    return new FOLIOLocationsRetrieverAPI(folioOkapiCredentials).getLocations();
+  }
+
+  protected JsonNode folioApiGetPickslipsForServicePoint(String id, int folioPickslipsLimit)
+      throws IOException {
+    return new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials)
+        .getPickslipsForServicePoint(id, folioPickslipsLimit);
+  }
+
+  protected JsonNode folioApiGetRequests() throws IOException {
+    return new FOLIORequestsRetrieverAPI(folioOkapiCredentials)
+        .getRequestsByStatus(
+            List.of(
+                PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED.getCode(),
+                PickslipQueues.Pickslip.Request.Status.OPEN_IN_TRANSIT.getCode()),
+            folioRequestsLimit);
   }
 }

@@ -1,0 +1,102 @@
+{
+  "locations": [
+    {
+      "id": "18749e74-091a-4d99-8c05-e2d96e6e92c8",
+      "name": "AUSLQ [Lakeside]",
+      "code": "AUSLQ",
+      "discoveryDisplayName": "Main Reading Room",
+      "isActive": true,
+      "institutionId": "43a62550-5fe5-4027-b975-fbbeb611ebb7",
+      "campusId": "9e6ddbe3-badd-479a-a8d6-e5025ede03e9",
+      "libraryId": "5766e580-347f-4960-bee6-9b7821df5d73",
+      "details": {
+        "opacPickupServicePointId": "325aea8b-f5f2-4160-88ca-63d803856a70",
+        "opacPickupServicePointName": "Main Reading Room"
+      },
+      "primaryServicePoint": "b552250a-81ad-4c61-b768-d4188b75f161",
+      "servicePointIds": [
+        "b552250a-81ad-4c61-b768-d4188b75f161"
+      ],
+      "servicePoints": [],
+      "metadata": {
+        "createdDate": "2022-09-29T21:29:06.329+00:00",
+        "createdByUserId": "e58b7757-f461-42d1-b502-e4e287242822",
+        "updatedDate": "2023-05-15T05:39:53.524+00:00",
+        "updatedByUserId": "1e63cc57-54d8-427f-84cb-11f378278a42"
+      }
+    },
+    {
+      "id": "e08095e7-4f53-465a-9d74-c5376d076f24",
+      "name": "RUNPEF - Aust [LG1]",
+      "code": "RUNPEF",
+      "discoveryDisplayName": "Main Reading Room",
+      "isActive": true,
+      "institutionId": "43a62550-5fe5-4027-b975-fbbeb611ebb7",
+      "campusId": "9e6ddbe3-badd-479a-a8d6-e5025ede03e9",
+      "libraryId": "5766e580-347f-4960-bee6-9b7821df5d73",
+      "details": {
+        "opacPickupServicePointId": "325aea8b-f5f2-4160-88ca-63d803856a70",
+        "opacPickupServicePointName": "Main Reading Room"
+      },
+      "primaryServicePoint": "cf222fba-49cc-4b41-90f7-ed220f4a8228",
+      "servicePointIds": [
+        "cf222fba-49cc-4b41-90f7-ed220f4a8228"
+      ],
+      "servicePoints": [],
+      "metadata": {
+        "createdDate": "2022-09-29T21:29:07.955+00:00",
+        "createdByUserId": "e58b7757-f461-42d1-b502-e4e287242822",
+        "updatedDate": "2023-05-15T05:57:58.243+00:00",
+        "updatedByUserId": "1e63cc57-54d8-427f-84cb-11f378278a42"
+      }
+    },
+    {
+      "id" : "343d85b5-654b-4331-aae3-67c434d57316",
+      "name" : "MITCHELL WAREHOUSE [Mitchell]",
+      "code" : "MITCHELL",
+      "discoveryDisplayName" : "Main Reading Room - Held offsite",
+      "isActive" : true,
+      "institutionId" : "43a62550-5fe5-4027-b975-fbbeb611ebb7",
+      "campusId" : "9e6ddbe3-badd-479a-a8d6-e5025ede03e9",
+      "libraryId" : "5766e580-347f-4960-bee6-9b7821df5d73",
+      "details" : {
+        "opacPickupServicePointId" : "325aea8b-f5f2-4160-88ca-63d803856a70",
+        "opacPickupServicePointName" : "Main Reading Room"
+      },
+      "primaryServicePoint" : "f2b6aa63-008f-4c02-a6ac-e761a6b51ee1",
+      "servicePointIds" : [ "f2b6aa63-008f-4c02-a6ac-e761a6b51ee1" ],
+      "servicePoints" : [ ],
+      "metadata" : {
+        "createdDate" : "2022-09-29T21:29:06.465+00:00",
+        "createdByUserId" : "e58b7757-f461-42d1-b502-e4e287242822",
+        "updatedDate" : "2023-05-15T06:28:46.022+00:00",
+        "updatedByUserId" : "1e63cc57-54d8-427f-84cb-11f378278a42"
+      }
+    },
+    {
+      "id": "64dfa4ff-c806-4f10-b871-e6a2af0a7e8e",
+      "name": "WHOUSE [Hume]",
+      "code": "WHOUSE",
+      "discoveryDisplayName": "Main Reading Room - Held offsite",
+      "isActive": true,
+      "institutionId": "43a62550-5fe5-4027-b975-fbbeb611ebb7",
+      "campusId": "9e6ddbe3-badd-479a-a8d6-e5025ede03e9",
+      "libraryId": "5766e580-347f-4960-bee6-9b7821df5d73",
+      "details": {
+        "opacPickupServicePointId": "325aea8b-f5f2-4160-88ca-63d803856a70",
+        "opacPickupServicePointName": "Main Reading Room"
+      },
+      "primaryServicePoint": "d3782c73-042e-4c36-98d1-efeb0fc3ac3e",
+      "servicePointIds": [
+        "d3782c73-042e-4c36-98d1-efeb0fc3ac3e"
+      ],
+      "servicePoints": [],
+      "metadata": {
+        "createdDate": "2022-09-29T21:29:08.858+00:00",
+        "createdByUserId": "e58b7757-f461-42d1-b502-e4e287242822",
+        "updatedDate": "2023-05-15T06:07:56.871+00:00",
+        "updatedByUserId": "1e63cc57-54d8-427f-84cb-11f378278a42"
+      }
+    }
+  ]
+}

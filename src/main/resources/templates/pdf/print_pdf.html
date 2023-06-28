@@ -16,14 +16,6 @@
                     <img class="barcode128" th:src="${barcode64}"/>
                     <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'" />
                 </div>
-                <p th:text="${pickslip.item.callNumber}" />
-                <p th:text="${#strings.abbreviate(pickslip.item.title,100)} ?: '-'"/>
-                <table>
-                    <tr class="spaced-above">
-                        <td class="label-left">Author:</td>
-                        <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
-                    </tr>
-                </table>
 
                 <div class="patron-info">
                     <p>
@@ -31,11 +23,18 @@
                         <span th:text="${pickslip.request.requester.firstName} ?: '-'" />
                     </p>
                     <p class="font-large heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
+                    <p class="font-large heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy')}"/>
                 </div>
 
+                <p class="spaced-above-xl" th:text="${pickslip.item.callNumber}" />
+                <p th:text="${#strings.abbreviate(pickslip.item.title,100)} ?: '-'"/>
+                <table>
+                    <tr class="spaced-above">
+                        <td class="label-left">Author:</td>
+                        <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
+                    </tr>
+                </table>
                 <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
-
-                <p class="font-large spaced-above-xl" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
 
             </div>
         </div>

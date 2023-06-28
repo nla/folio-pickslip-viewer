@@ -1,0 +1,46 @@
+{
+  "pickslips": [
+    {
+      "requestId": "a9d7fff3-4211-49ee-855a-1ca59dd27fe5",
+      "item": {
+        "title": "The miscellaneous works of Thomas Arnold.",
+        "primaryContributor": "Arnold, Thomas, 1795-1842",
+        "allContributors": "Arnold, Thomas, 1795-1842",
+        "barcode": "990002052522",
+        "descriptionOfPieces": null,
+        "callNumber": "320.4 ARN",
+        "copy": "1",
+        "yearCaption": "",
+        "chronology": null,
+        "enumeration": null,
+        "effectiveLocationSpecific": "MITCHELL WAREHOUSE [Mitchell]"
+      },
+      "requester": {
+        "firstName": "Michael",
+        "lastName": "Howard",
+        "barcode": "a"
+      }
+    },
+    {
+      "requestId" : "c62b7535-2d98-43c1-ba5c-906ceb41fcd7",
+      "item" : {
+        "title" : "Print : a manual for librarians and students describing in detail the  history, methods, and applications of printing and paper making.",
+        "primaryContributor" : "Mann, George",
+        "allContributors" : "Mann, George",
+        "barcode" : "990001588920",
+        "numberOfPieces" : null,
+        "callNumber" : "655 MAN",
+        "copy" : "1",
+        "yearCaption" : "",
+        "chronology" : null,
+        "enumeration" : null,
+        "effectiveLocationSpecific" : "MITCHELL WAREHOUSE [Mitchell]"
+      },
+      "requester" : {
+        "firstName" : "Alex (SPL)",
+        "lastName" : "Barr",
+        "barcode" : "21708000392674"
+      }
+    }
+  ]
+}

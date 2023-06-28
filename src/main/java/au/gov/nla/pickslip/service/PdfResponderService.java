@@ -64,8 +64,8 @@ public class PdfResponderService {
 
     try (Document out = new Document(PageSize.A4)) {
 
-      var ll = pickslipList.stream().map(p -> p.instance().id()).toList();
-      var lll = folioService.getFolioInstances(ll);
+      var instanceIdList = pickslipList.stream().map(p -> p.instance().id()).toList();
+      var instances = folioService.getFolioInstances(instanceIdList);
 
       PdfCopy writer = new PdfCopy(out, os);
       out.open();
@@ -80,7 +80,7 @@ public class PdfResponderService {
         }
 
         ctx.setVariable("barcode64", image != null ? "data:image/png;base64," + image : null);
-        ctx.setVariable("instance", lll.get(pickslip.instance().id()));
+        ctx.setVariable("instance", instances.get(pickslip.instance().id()));
         ctx.setVariable("pickslip", pickslip);
 
         String htmlContent = this.templateEngine.process("pdf/print_pdf", ctx);

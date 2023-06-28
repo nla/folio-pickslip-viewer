@@ -50,23 +50,22 @@ public class HomeController {
   }
 
   // Extract numeric components relevant to sorting from call number.  Just enough to be helpful wrt
-  // shelf order when
-  // printing in bulk. e.g.:
+  // shelf order when printing in bulk. e.g.:
   // "NL 582.1309945 G148" -> 582.1309945
   // "N 2019-1537" -> 2019.1537
   // "ORAL TRC 3800" -> 0
   // "Ephemera (Trade catalogues)" -> 0
   // "mfm X 650/reels 5,704-5,790." -> 0
-  private float getDeweyish(String callNumber) {
+  double getDeweyish(String callNumber) {
 
     Pattern pattern = Pattern.compile("^\\D*(\\d+)\\D?(\\d+)?");
     Matcher matcher = pattern.matcher(callNumber);
 
-    float result = 0;
+    double result = 0;
     try {
       if (matcher.find()) {
         result =
-            Float.parseFloat(
+            Double.parseDouble(
                 ((matcher.groupCount() > 0) ? matcher.group(1) : "0")
                     + "."
                     + ((matcher.groupCount() > 1) ? matcher.group(2) : "0"));

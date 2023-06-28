@@ -1,0 +1,72 @@
+{
+  "servicepoints": [
+    {
+      "id": "f2b6aa63-008f-4c02-a6ac-e761a6b51ee1",
+      "name": "Mitchell",
+      "code": "MITCHELL-SP",
+      "discoveryDisplayName": "Mitchell Warehouse",
+      "pickupLocation": false,
+      "holdShelfClosedLibraryDateManagement": "Keep_the_current_due_date",
+      "staffSlips": [
+        {
+          "id": "6a6e72f0-69da-4b4c-8254-7154679e9d88",
+          "printByDefault": false
+        },
+        {
+          "id": "8812bae1-2738-442c-bc20-fe4bb38a11f8",
+          "printByDefault": false
+        },
+        {
+          "id": "1ed55c5c-64d9-40eb-8b80-7438a262288b",
+          "printByDefault": false
+        },
+        {
+          "id": "f838cdaf-555a-473f-abf1-f35ef6ab8ae1",
+          "printByDefault": false
+        }
+      ],
+      "metadata": {
+        "createdDate": "2022-09-29T21:29:02.156+00:00",
+        "createdByUserId": "e58b7757-f461-42d1-b502-e4e287242822",
+        "updatedDate": "2023-01-16T02:24:59.412+00:00",
+        "updatedByUserId": "1e63cc57-54d8-427f-84cb-11f378278a42"
+      }
+    },
+    {
+      "id": "325aea8b-f5f2-4160-88ca-63d803856a70",
+      "name": "Main Reading Room",
+      "code": "MRR-SP",
+      "discoveryDisplayName": "Main Reading Room",
+      "pickupLocation": true,
+      "holdShelfExpiryPeriod": {
+        "duration": 7,
+        "intervalId": "Days"
+      },
+      "holdShelfClosedLibraryDateManagement": "Keep_the_current_due_date",
+      "staffSlips": [
+        {
+          "id": "6a6e72f0-69da-4b4c-8254-7154679e9d88",
+          "printByDefault": false
+        },
+        {
+          "id": "8812bae1-2738-442c-bc20-fe4bb38a11f8",
+          "printByDefault": false
+        },
+        {
+          "id": "1ed55c5c-64d9-40eb-8b80-7438a262288b",
+          "printByDefault": false
+        },
+        {
+          "id": "f838cdaf-555a-473f-abf1-f35ef6ab8ae1",
+          "printByDefault": false
+        }
+      ],
+      "metadata": {
+        "createdDate": "2022-09-29T21:29:02.011+00:00",
+        "createdByUserId": "e58b7757-f461-42d1-b502-e4e287242822",
+        "updatedDate": "2023-05-15T02:51:19.920+00:00",
+        "updatedByUserId": "1e63cc57-54d8-427f-84cb-11f378278a42"
+      }
+    }
+  ]
+}

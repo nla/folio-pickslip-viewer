@@ -7,7 +7,8 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/* Representation of request queues in FOLIO. This is the core data model for this application. This structure is
+/*
+  Representation of request queues in FOLIO. This is the core data model for this application. This structure is
   built up from the following four sources:
 
     - data in the configuration file (stack codes and display names)
@@ -52,9 +53,10 @@ public class PickslipQueues {
 
   // domain model of a pickslip, constructed from FOLIO request and pickslip data.
   public record Pickslip(
-      boolean
-          visiting, // contains at least one tag which corresponds to another Service Point / Stack
+      // contains at least one tag which corresponds to another Service Point / Stack
       // - flagged for attention by another stack area.
+      boolean visiting,
+      boolean parked, // flagged (tagged) as parked in FOLIO
       Request request,
       Item item,
       Instance instance) {
@@ -90,6 +92,11 @@ public class PickslipQueues {
       public boolean isNotYetFilled() {
         return Status.OPEN_NOT_YET_FILLED.getCode().equalsIgnoreCase(status);
       }
+
+      // boolean to flip every thirty minutes for display - supports workflow
+      public boolean isRequestDateEvenThirty() {
+        return (requestDate.getMinute() >= 30);
+      }
     }
     ;
 
@@ -119,7 +126,8 @@ public class PickslipQueues {
     static Pickslip fromFolioPickSlipAndRequest(
         List<String> servicePointCodes, String except, FolioPickslip fps, FolioRequest fr) {
 
-      String UNAVAILABLE = "(Unavailable)";
+      final String UNAVAILABLE = "(Unavailable)";
+      final String TAG_PARKED = "parked";
 
       Request request =
           new Request(
@@ -174,14 +182,14 @@ public class PickslipQueues {
       Instance instance = new Instance(fr.instanceId(), fr.instance().title());
 
       boolean visiting = false;
+      boolean parked = false;
       var tagList = fr.tagList();
       if (tagList != null) {
-        if (tagList.stream().anyMatch(s -> inList(s, except, servicePointCodes))) {
-          visiting = true;
-        }
+        visiting = (tagList.stream().anyMatch(s -> inList(s, except, servicePointCodes)));
+        parked = (tagList.stream().anyMatch(s -> s.equalsIgnoreCase(TAG_PARKED)));
       }
 
-      return new Pickslip(visiting, request, item, instance);
+      return new Pickslip(visiting, parked, request, item, instance);
     }
   }
   ;
@@ -303,6 +311,11 @@ public class PickslipQueues {
   }
 
   public List<Pickslip> getPickslipsForStack(String stackCode) {
+
+    if (this.servicePointPickslips == null) {
+      return null;
+    }
+
     var key =
         this.servicePointPickslips.keySet().stream()
             .filter(k -> stackCode.equals(k.code()))

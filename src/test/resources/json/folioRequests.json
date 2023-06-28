@@ -1,0 +1,32 @@
+{
+  "requests": [
+    {
+      "id": "e688d594-379b-456d-845c-e68c14e613d8",
+      "requestDate": "2023-03-26T13:00:00.000+00:00",
+      "patronComments": "",
+      "itemId": "dd3223ca-a641-521e-9b51-2090d34bebd6",
+      "instanceId": "f4e192ba-a995-5f2c-8d7d-c13ec36d258f",
+      "requesterId": "5e73e86d-e493-5465-9bbe-a8d62025f475",
+      "status": "Open - Not yet filled",
+      "position": 1,
+      "instance": {
+        "title": "Land without justice : an autobiography of his youth / Milovan Djilas ; with an introduction and notes by William Jovanovich."
+      },
+      "item" : {
+        "barcode" : "990001588920",
+        "callNumber" : "655 MAN",
+        "location" : {
+          "name" : "MITCHELL WAREHOUSE [Mitchell]",
+          "code" : "MITCHELL"
+        }
+      },
+      "requester" : {
+        "barcode" : "21708000392647",
+        "patronGroupGroup" : "SPL",
+        "patronGroupDescription" : "Staff Personal Loan"
+      },
+      "tagList" : [ "mrr-sp", "parked" ]
+    }
+  ]
+}
+

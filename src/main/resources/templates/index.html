@@ -10,7 +10,7 @@
     <div class="p-3">
         <div class="container-fluid bg-light p-2 rounded">
 
-            <header th:replace="~{common/general :: admintitle('Pickslips', 'All Requests')}" />
+            <header th:replace="~{common/general :: admintitle('All Requests')}" />
 
             <div class="bg-white m-2 p-4 border border-1 rounded">
 
@@ -24,6 +24,7 @@
                         <th scope="col">Status</th>
                         <th scope="col">Patron Group</th>
                         <th scope="col">Title</th>
+                        <th scope="col">Name</th>
                         <th scope="col">Barcode</th>
                         <th scope="col">Print/Multi</th>
                     </tr>
@@ -34,13 +35,18 @@
                             <th:block th:with="queue = ${queues.getPickslipsForStack(loc.code)}">
 
                                 <tr class="heading bg-light text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
-                                    <td colspan="7" class="pt-3 px-2">
+                                    <td colspan="8" class="pt-3 px-2">
                                         [[${loc.label}]]
                                     </td>
                                 </tr>
 
-                                <tr th:each="s : ${queue}" th:classappend="|stack-${loc.code}${s.visiting ? ' visiting' : ''}|" >
+                                <tr th:each="s : ${queue}" th:classappend="${'stack-'+loc.code + ' ' +
+                                                                             (s.visiting ? 'visiting ' : '') +
+                                                                             (s.parked ? 'parked ' : '') +
+                                                                             (s.request?.isRequestDateEvenThirty ? 'even30' : 'odd30')}">
+
                                     <td class="px-4 nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
+
                                     <td>
                                         <a th:target="_blank"
                                            th:href="${@environment.getProperty('folio.request-view-prefix')}
@@ -51,11 +57,15 @@
                                     <td> <span class="nobreak fs-small px-2 py-1 fw-lighter rounded-4"
                                                th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
                                         [[${s.request.status}]]
+                                        [[${s.request.isRequestDateEvenThirty}]]
                                     </span></td>
 
                                     <td class="nobreak">[[${s.request.patronGroup}]]</td>
                                     <td>[[${s.item.title}]]</td>
-                                    <td class="text-muted fw-lighter">[[${s.item.barcode}]]</td>
+
+                                    <td class="nobreak fw-lighter">[[(${s.request.requester.firstName} ?: '-') + ' ' +
+                                                                     (${s.request.requester.lastName} ?: '-')]]</td>
+                                    <td class="fw-lighter">[[${s.item.barcode}]]</td>
                                     <td class="nobreak">
                                         <a th:if="${s.request.isNotYetFilled()}"
                                            th:href="@{/export/{rid}(rid=${s.request.id})}"

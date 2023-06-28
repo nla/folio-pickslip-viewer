@@ -4,7 +4,6 @@ import au.gov.nla.pickslip.StackLocations;
 import au.gov.nla.pickslip.domain.*;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -13,17 +12,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-@EnableScheduling
 public class ScheduledRequestRetrieverService {
 
-  // ISO 8601 Duration i.e. PT10S
-  @Value("${schedule.retriever.interval}")
-  String runInterval;
+  @Value("${schedule.retriever.cron}")
+  String runCron;
 
   @Value("${schedule.retriever.enabled}")
   Boolean enabled;
@@ -38,10 +36,7 @@ public class ScheduledRequestRetrieverService {
 
   @PostConstruct
   private void init() {
-
-    this.log.info(
-        String.format(
-            "Scheduled FOLIO request retriever running every %s..", Duration.parse(runInterval)));
+    this.log.info(String.format("Scheduled FOLIO request retriever cron spec: %s..", runCron));
   }
 
   public LocalDateTime getLastStarted() {
@@ -69,8 +64,10 @@ public class ScheduledRequestRetrieverService {
     }
   }
 
-  @Scheduled(fixedDelayString = "${schedule.retriever.interval}")
-  public void fetch() throws IOException {
+  // event listener and scheduler will be on different threads
+  @Scheduled(cron = "${schedule.retriever.cron}")
+  @EventListener(ContextRefreshedEvent.class)
+  public synchronized void fetch() throws IOException {
 
     try {
       this.lastStarted = LocalDateTime.now();
