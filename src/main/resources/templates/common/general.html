@@ -40,12 +40,37 @@
         </div>
         <ul class="navbar-nav">
             <li class="nav-item text-end" >
-                <span class="nav-link mx-2">
+                <span class="nav-link">
                     [[${#temporals.format(lastSuccess, 'H:mm:ss')} ?: 'Not ready!']]
+                </span>
+            </li>
+            <li>
+                <span class="nav-link">
+                    <span class="refresh form-check form-switch">
+                        <input class="form-check-input" type="checkbox"
+                               onclick="setAuto()" role="switch" autocomplete="off"
+                               id="autoRefresh" title="Auto refresh" checked>
+                        <label class="form-check-label" for="autoRefresh"><span class="m-1 bi-arrow-clockwise"></span></label>
+                    </span>
                 </span>
             </li>
         </ul>
     </nav>
+
+    <script>
+        function setAuto() {
+            if (!event.target.checked && refreshTimeout) {
+                clearTimeout(refreshTimeout);
+                refreshTimeout = null;
+            }
+            if (event.target.checked && !refreshTimeout) {
+                refreshTimeout = setTimeout(() => location.reload(), 30000);
+            }
+        }
+
+        var refreshTimeout = setTimeout(() => location.reload(), 30000);
+
+    </script>
 
     <div id="last-updated">
         <span class="bi-clock"></span>
