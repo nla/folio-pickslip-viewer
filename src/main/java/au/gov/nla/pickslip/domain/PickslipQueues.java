@@ -127,6 +127,7 @@ public class PickslipQueues {
         List<String> servicePointCodes, String except, FolioPickslip fps, FolioRequest fr) {
 
       final String UNAVAILABLE = "(Unavailable)";
+      final String UNAVAILABLE_SHORT = "(?)";
       final String TAG_PARKED = "parked";
 
       Request request =
@@ -156,10 +157,10 @@ public class PickslipQueues {
                 UNAVAILABLE, // descriptionOfPieces
                 fr.item().barcode(),
                 fr.item().callNumber(),
-                UNAVAILABLE, // chronology
-                UNAVAILABLE, // enumeration
+                UNAVAILABLE_SHORT, // chronology
+                UNAVAILABLE_SHORT, // enumeration
                 UNAVAILABLE, // effectiveLocationSpecific
-                UNAVAILABLE, // yearCaption
+                UNAVAILABLE_SHORT, // yearCaption
                 UNAVAILABLE // copy
                 );
       } else {
