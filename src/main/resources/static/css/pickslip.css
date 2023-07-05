@@ -1,9 +1,11 @@
+html {
+    font-size: 11px;
+}
 
 :root {
-	--galc-purple: #34075b;
 	--folio-orange: #a73a00;
 	--logo-orange: #e8b398;
-	--stack-LAKE-SP: #7070d5;
+	--stack-LAKE-SP: #afabab;
 	--stack-EAST-SP: #98fd80;
 	--stack-CENT-SP: #fd80be;
 	--stack-WEST-SP: #fdf080;
@@ -13,8 +15,8 @@
 	--stack-SPEC2-SP: #3cc8b4;
 	--stack-HUME-SP: #b880fd;
 	--stack-MITCHELL-SP: #9f58f7;
-	--stack-PICMSS-SP: #80a0fd;
-	--stack-ASIAN-SP: #a080fd;
+	--stack-PICMSS-SP: #f78653;
+	--stack-ASIAN-SP: #f1bb59;
 }
 
 .action {
@@ -53,7 +55,6 @@ fieldset .row .form-label {
     background-color: var(--bs-light);
     border: var(--bs-border-width) var(--bs-border-style) var(--bs-gray);
 }
-
 
 .fs-small {
     font-size: small;

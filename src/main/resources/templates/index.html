@@ -19,12 +19,13 @@
                 <table class="table table-sm table-hover table-responsive-xl">
                     <thead class="thead-light">
                     <tr>
-                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
                         <th scope="col">Call Number</th>
+                        <th scope="col">Year/Enum</th>
                         <th scope="col">Status</th>
                         <th scope="col">Patron Group</th>
                         <th scope="col">Title</th>
-                        <th scope="col">Name</th>
+                        <th scope="col">Patron</th>
                         <th scope="col">Barcode</th>
                         <th scope="col">Print/Multi</th>
                     </tr>
@@ -35,7 +36,7 @@
                             <th:block th:with="queue = ${queues.getPickslipsForStack(loc.code)}">
 
                                 <tr class="heading bg-light text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
-                                    <td colspan="8" class="pt-3 px-2">
+                                    <td colspan="9" class="pt-3 px-2">
                                         [[${loc.label}]]
                                     </td>
                                 </tr>
@@ -45,20 +46,25 @@
                                                                              (s.parked ? 'parked ' : '') +
                                                                              (s.request?.isRequestDateEvenThirty ? 'even30' : 'odd30')}">
 
-                                    <td class="px-4 nobreak">[[${#temporals.format(s.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')} ?: '-']]</td>
+                                    <td class="px-4 nobreak">[[${#temporals.format(s.request.requestDate, 'HH:mm:ss - dd MMM yyyy')} ?: '-']]</td>
 
                                     <td>
                                         <a th:target="_blank"
                                            th:href="${@environment.getProperty('folio.request-view-prefix')}
-                                               +${s.request.id}
-                                               +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
+                                                   +${s.request.id}
+                                                   +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
                                     </td>
 
-                                    <td> <span class="nobreak fs-small px-2 py-1 fw-lighter rounded-4"
-                                               th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
-                                        [[${s.request.status}]]
-                                        [[${s.request.isRequestDateEvenThirty}]]
-                                    </span></td>
+                                    <td th:text="${(s.item.yearCaption ?: '') + ' ' +
+                                                   (s.item.enumeration ?: '') + ' ' +
+                                                   (s.item.chronology ?: '')}"></td>
+
+                                    <td>
+                                        <span class="nobreak fs-teeny px-2 py-1 fw-lighter rounded-4"
+                                                   th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
+                                            [[${s.request.status}]]
+                                        </span>
+                                    </td>
 
                                     <td class="nobreak">[[${s.request.patronGroup}]]</td>
                                     <td>[[${s.item.title}]]</td>
