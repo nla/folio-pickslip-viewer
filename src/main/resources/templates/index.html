@@ -10,7 +10,7 @@
     <div class="p-3">
         <div class="container-fluid bg-light p-2 rounded">
 
-            <header th:replace="~{common/general :: admintitle('All Requests')}" />
+            <header th:replace="~{common/general :: admintitle('Requests')}" />
 
             <div class="bg-white m-2 p-4 border border-1 rounded">
 
@@ -21,7 +21,7 @@
                     <tr>
                         <th scope="col">Time</th>
                         <th scope="col">Call Number</th>
-                        <th scope="col">Year/Enum</th>
+                        <th scope="col">Year</th>
                         <th scope="col">Status</th>
                         <th scope="col">Patron Group</th>
                         <th scope="col">Title</th>
@@ -35,9 +35,16 @@
                         <th:block th:each="loc : ${stacks}">
                             <th:block th:with="queue = ${queues.getPickslipsForStack(loc.code)}">
 
-                                <tr class="heading bg-light text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
-                                    <td colspan="9" class="pt-3 px-2">
-                                        [[${loc.label}]]
+                                <tr class="heading text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
+                                    <td colspan="9" class="pt-4 px-2">
+                                        <div class="d-flex justify-content-between">
+                                            <div>[[${loc.label}]]</div>
+                                            <th:block th:with="reassigned = ${queues.getVisitorsForStack(loc.code).size}">
+                                                <div th:if="${reassigned} > 0">
+                                                    + <span th:text="${reassigned}"></span> reassigned
+                                                </div>
+                                            </th:block>
+                                        </div>
                                     </td>
                                 </tr>
 
@@ -46,7 +53,10 @@
                                                                              (s.parked ? 'parked ' : '') +
                                                                              (s.request?.isRequestDateEvenThirty ? 'even30' : 'odd30')}">
 
-                                    <td class="px-4 nobreak">[[${#temporals.format(s.request.requestDate, 'HH:mm:ss - dd MMM yyyy')} ?: '-']]</td>
+                                    <td class="px-4 nobreak">
+                                        <span th:text="${#temporals.format(s.request.requestDate, 'HH:mm:ss')} ?: '-'"></span>
+                                        <span class="fw-lighter" th:text="${#temporals.format(s.request.requestDate, '- dd-MMM-yyyy')} ?: '-'"></span>
+                                    </td>
 
                                     <td>
                                         <a th:target="_blank"
@@ -55,9 +65,7 @@
                                                    +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
                                     </td>
 
-                                    <td th:text="${(s.item.yearCaption ?: '') + ' ' +
-                                                   (s.item.enumeration ?: '') + ' ' +
-                                                   (s.item.chronology ?: '')}"></td>
+                                    <td th:text="${(s.item.yearCaption ?: '')}"></td>
 
                                     <td>
                                         <span class="nobreak fs-teeny px-2 py-1 fw-lighter rounded-4"

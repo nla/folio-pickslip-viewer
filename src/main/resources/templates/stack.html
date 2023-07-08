@@ -26,7 +26,7 @@
                         <tr>
                             <th scope="col">Time</th>
                             <th scope="col">Call Number</th>
-                            <th scope="col">Year/Enum</th>
+                            <th scope="col">Year</th>
                             <th scope="col">Status</th>
                             <th scope="col">Patron Group</th>
                             <th scope="col">Title</th>
@@ -37,7 +37,10 @@
                         </thead>
                         <tbody>
                         <tr th:each="s : ${visitors}">
-                            <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'HH:mm:ss dd-MMM-yyyy')} ?: '-']]</td>
+                            <td class="nobreak">
+                                <span th:text="${#temporals.format(s.request.requestDate, 'HH:mm:ss')} ?: '-'"></span>
+                                <span class="fw-lighter" th:text="${#temporals.format(s.request.requestDate, '- dd-MMM-yyyy')} ?: '-'"></span>
+                            </td>
                             <td>
                                 <a th:target="_blank"
                                    th:href="${@environment.getProperty('folio.request-view-prefix')}
@@ -45,9 +48,7 @@
                                            +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
                             </td>
 
-                            <td th:text="${(s.item.yearCaption ?: '') + ' ' +
-                                           (s.item.enumeration ?: '') + ' ' +
-                                           (s.item.chronology ?: '')}"></td>
+                            <td th:text="${(s.item.yearCaption ?: '')}"></td>
 
                             <td> <span class="nobreak fs-teeny px-2 py-1 fw-lighter rounded-4"
                                        th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">
@@ -91,7 +92,7 @@
                         <tr>
                             <th scope="col">Time</th>
                             <th scope="col">Call Number</th>
-                            <th scope="col">Year/Enum</th>
+                            <th scope="col">Year</th>
                             <th scope="col">Status</th>
                             <th scope="col">Patron Group</th>
                             <th scope="col">Title</th>
@@ -105,7 +106,11 @@
                                                                      (s.parked ? 'parked ' : '') +
                                                                      (s.request.isRequestDateEvenThirty ? 'even30' : 'odd30')}">
 
-                        <td class="nobreak">[[${#temporals.format(s.request.requestDate, 'HH:mm:ss dd-MMM-yyyy')} ?: '-']]</td>
+                            <td class="nobreak">
+                                <span th:text="${#temporals.format(s.request.requestDate, 'HH:mm:ss')} ?: '-'"></span>
+                                <span class="fw-lighter" th:text="${#temporals.format(s.request.requestDate, '- dd-MMM-yyyy')} ?: '-'"></span>
+                            </td>
+
                             <td>
                                 <a th:target="_blank"
                                    th:href="${@environment.getProperty('folio.request-view-prefix')}
@@ -113,9 +118,7 @@
                                            +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
                             </td>
 
-                            <td th:text="${(s.item.yearCaption ?: '') + ' ' +
-                                           (s.item.enumeration ?: '') + ' ' +
-                                           (s.item.chronology ?: '')}"></td>
+                            <td th:text="${(s.item.yearCaption ?: '')}"></td>
 
                             <td> <span class="nobreak fs-teeny px-2 py-1 fw-lighter rounded-4"
                                        th:classappend="|status-${s.request.isNotYetFilled() ? 'not-yet-filled' : 'other'}|">

@@ -30,8 +30,11 @@ stacklocations:
       code: SPEC2-SP
       label: Specials 2
     -
-      code: PICMSS-SP
-      label: Pictures & Manuscripts
+      code: MSS-SP
+      label: Manuscripts
+    -
+      code: PIC-SP
+      label: Pictures
     -
       code: HUME-SP
       label: Hume
