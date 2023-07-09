@@ -15,7 +15,8 @@ html {
 	--stack-SPEC2-SP: #3cc8b4;
 	--stack-HUME-SP: #b880fd;
 	--stack-MITCHELL-SP: #9f58f7;
-	--stack-PICMSS-SP: #f78653;
+	--stack-MSS-SP: #f78653;
+	--stack-PIC-SP: #faaf8e;
 	--stack-ASIAN-SP: #f1bb59;
 }
 
@@ -122,7 +123,8 @@ tr.odd30 {
 .nav-link.stack-SPEC2-SP:focus,    .nav-link.stack-SPEC2-SP:hover    { color: var(--stack-SPEC2-SP); }
 .nav-link.stack-MITCHELL-SP:focus, .nav-link.stack-MITCHELL-SP:hover { color: var(--stack-MITCHELL-SP); }
 .nav-link.stack-HUME-SP:focus,     .nav-link.stack-HUME-SP:hover     { color: var(--stack-HUME-SP); }
-.nav-link.stack-PICMSS-SP:focus,   .nav-link.stack-PICMSS-SP:hover   { color: var(--stack-PICMSS-SP); }
+.nav-link.stack-MSS-SP:focus,      .nav-link.stack-MSS-SP:hover      { color: var(--stack-MSS-SP); }
+.nav-link.stack-PIC-SP:focus,      .nav-link.stack-PIC-SP:hover      { color: var(--stack-PIC-SP); }
 .nav-link.stack-ASIAN-SP:focus,    .nav-link.stack-ASIAN-SP:hover    { color: var(--stack-ASIAN-SP); }
 
 /* -- stacks - shadows -- */
@@ -176,9 +178,14 @@ div.stack-HUME-SP {
               0 0 30px 0px var(--stack-HUME-SP) !important
 }
 
-div.stack-PICMSS-SP {
- box-shadow : 0 0 5px  2px var(--stack-PICMSS-SP),
-              0 0 30px 0px var(--stack-PICMSS-SP) !important
+div.stack-MSS-SP {
+ box-shadow : 0 0 5px  2px var(--stack-MSS-SP),
+              0 0 30px 0px var(--stack-MSS-SP) !important
+}
+
+div.stack-PIC-SP {
+ box-shadow : 0 0 5px  2px var(--stack-PIC-SP),
+              0 0 30px 0px var(--stack-PIC-SP) !important
 }
 
 div.stack-ASIAN-SP {
@@ -198,5 +205,22 @@ tr.stack-SPEC1-SP    { border-left: 10px solid var(--stack-SPEC1-SP); }
 tr.stack-SPEC2-SP    { border-left: 10px solid var(--stack-SPEC2-SP); }
 tr.stack-MITCHELL-SP { border-left: 10px solid var(--stack-MITCHELL-SP); }
 tr.stack-HUME-SP     { border-left: 10px solid var(--stack-HUME-SP); }
-tr.stack-PICMSS-SP   { border-left: 10px solid var(--stack-PICMSS-SP); }
+tr.stack-MSS-SP      { border-left: 10px solid var(--stack-MSS-SP); }
+tr.stack-PIC-SP      { border-left: 10px solid var(--stack-PIC-SP); }
 tr.stack-ASIAN-SP    { border-left: 10px solid var(--stack-ASIAN-SP); }
+
+tr.stack-LAKE-SP.heading     { border-bottom: 2px solid var(--stack-LAKE-SP); }
+tr.stack-EAST-SP.heading     { border-bottom: 2px solid var(--stack-EAST-SP); }
+tr.stack-CENT-SP.heading     { border-bottom: 2px solid var(--stack-CENT-SP); }
+tr.stack-WEST-SP.heading     { border-bottom: 2px solid var(--stack-WEST-SP); }
+tr.stack-LG1-SP.heading      { border-bottom: 2px solid var(--stack-LG1-SP); }
+tr.stack-NEWS-SP.heading     { border-bottom: 2px solid var(--stack-NEWS-SP); }
+tr.stack-SPEC1-SP.heading    { border-bottom: 2px solid var(--stack-SPEC1-SP); }
+tr.stack-SPEC2-SP.heading    { border-bottom: 2px solid var(--stack-SPEC2-SP); }
+tr.stack-MITCHELL-SP.heading { border-bottom: 2px solid var(--stack-MITCHELL-SP); }
+tr.stack-HUME-SP.heading     { border-bottom: 2px solid var(--stack-HUME-SP); }
+tr.stack-MSS-SP.heading      { border-bottom: 2px solid var(--stack-MSS-SP); }
+tr.stack-PIC-SP.heading      { border-bottom: 2px solid var(--stack-PIC-SP); }
+tr.stack-ASIAN-SP.heading    { border-bottom: 2px solid var(--stack-ASIAN-SP); }
+
+tr.heading { border-left: none; }
