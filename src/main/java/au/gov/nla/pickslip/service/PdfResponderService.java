@@ -59,7 +59,6 @@ public class PdfResponderService {
 
   public synchronized void generate(OutputStream os, List<PickslipQueues.Pickslip> pickslipList) {
 
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Context ctx = new Context(LocaleContextHolder.getLocale());
 
     try (Document out = new Document(PageSize.A4)) {
@@ -85,6 +84,7 @@ public class PdfResponderService {
 
         String htmlContent = this.templateEngine.process("pdf/print_pdf", ctx);
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         renderer.setDocumentFromString(htmlContent);
         renderer.layout();
         renderer.createPDF(baos);
