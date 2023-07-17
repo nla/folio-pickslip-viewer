@@ -75,7 +75,7 @@ public class FolioAsyncService {
 
   // ptrArray points to an array of objects or strings, ptrValue is the json name from which to
   // extract the value, from the object, or null if the array contains only strings.  Values are
-  // joined by commas and returend.
+  // joined by commas and returned.
   private String flatten(JsonNode node, String ptrArray, String ptrValue) {
     ArrayList<String> result = new ArrayList<>();
     JsonNode arrayNode = node.at(ptrArray);
