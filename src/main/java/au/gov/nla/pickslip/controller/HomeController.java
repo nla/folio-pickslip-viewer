@@ -77,24 +77,34 @@ public class HomeController {
     return result;
   }
 
+  /*
+   * Bulk print slips in "call slip order".  If visitors is set, the visitors to a stack location
+   * are printed. Otherwise, the requests in a stack location are printed, and visitors are skipped.
+   * Slips are ordered by callslip number when they look like they're based on a Dewey number.
+   */
   @GetMapping("/bulkprint/{stack}")
   public void bulkExport(
-      @PathVariable String stack, @RequestParam String upToId, HttpServletResponse response)
+      @PathVariable String stack,
+      @RequestParam String upToId,
+      @RequestParam(required = false) boolean visitors,
+      HttpServletResponse response)
       throws IOException {
 
     ServletOutputStream sos = response.getOutputStream();
     response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=print.pdf");
 
-    List<PickslipQueues.Pickslip> sortedPickslips = null;
-
     var uptoPickslip = this.pickslipQueues.getPickslipByRequestId(upToId);
-    var stackPickslips = this.pickslipQueues.getPickslipsForStack(stack);
+    var stackPickslips =
+        visitors
+            ? this.pickslipQueues.getVisitorsForStack(stack)
+            : this.pickslipQueues.getPickslipsForStack(stack);
     if (uptoPickslip == null || stackPickslips == null) {
       return;
     }
 
-    // filter out visiting and anything that's not open-not-yet-filled.
-    // sort by something that looks like a dewey number (or running number), then alphabetically
+    // filter out visitors unless we're printing visitors, and anything that's not
+    // open-not-yet-filled. Sort by something that looks like a dewey number (or running number),
+    // then alphabetically.
     var sorted =
         stackPickslips.stream()
             .filter(
@@ -103,7 +113,7 @@ public class HomeController {
                         || p.request().requestDate().isEqual(uptoPickslip.request().requestDate()))
             .filter(
                 p ->
-                    !p.visiting()
+                    p.visiting() == visitors
                         && PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED
                             .getCode()
                             .equalsIgnoreCase(p.request().status()))

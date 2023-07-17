@@ -111,6 +111,15 @@ tr.odd30 {
     border-right: 4px solid var(--bs-gray-500);
 }
 
+.section a {
+    color: var(--bs-gray-600);
+    text-decoration: none;
+}
+
+.section a:hover {
+    text-decoration: underline;
+}
+
 /* -- header - navlinks -- */
 
 .nav-link.stack-LAKE-SP:focus,     .nav-link.stack-LAKE-SP:hover     { color: var(--stack-LAKE-SP); }

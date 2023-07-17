@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head th:replace="~{common/general :: htmlhead('Pickslips')}" />
+<head th:replace="~{common/general :: htmlhead('Requests')}" />
 
 <body class="bg-dark">
 <header th:replace="~{common/general :: header(${stacks}, ${showOnly}, ${lastSuccess}, null)}" />
@@ -37,12 +37,18 @@
 
                                 <tr class="heading text-muted fw-semibold" th:classappend="|stack-${loc.code}|" >
                                     <td colspan="9" class="pt-4 px-2">
-                                        <div class="d-flex justify-content-between">
-                                            <div>[[${loc.label}]]</div>
+                                        <div class="d-flex justify-content-between section">
+                                            <a th:href="${showOnly} ? @{/location/{code}(code = ${loc.code},showOnly=${showOnly})}
+                                                                    : @{/location/{code}(code = ${loc.code})}">
+                                                [[${loc.label}]]
+                                            </a>
+
                                             <th:block th:with="reassigned = ${queues.getVisitorsForStack(loc.code).size}">
-                                                <div th:if="${reassigned} > 0">
-                                                    + <span th:text="${reassigned}"></span> reassigned
-                                                </div>
+                                                <a th:if="${reassigned} > 0"
+                                                   th:href="${showOnly} ? @{/location/{code}(code = ${loc.code},showOnly=${showOnly})}
+                                                                        : @{/location/{code}(code = ${loc.code})}">
+                                                    + [[${reassigned}]] reassigned
+                                                </a>
                                             </th:block>
                                         </div>
                                     </td>
