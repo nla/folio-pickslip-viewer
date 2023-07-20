@@ -24,6 +24,7 @@
                     </p>
                     <p class="font-large heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
                     <p class="font-large heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy')}"/>
+                    <p class="font-large heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
                 </div>
 
                 <p class="spaced-above-xl" th:text="${pickslip.item.callNumber}" />
@@ -34,7 +35,6 @@
                         <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
                     </tr>
                 </table>
-                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
 
             </div>
         </div>
