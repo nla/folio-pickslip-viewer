@@ -102,7 +102,7 @@ public class HomeController {
       return;
     }
 
-    // filter out visitors unless we're printing visitors, and anything that's not
+    // filter out visitors unless we're printing visitors, parked requests, and anything that's not
     // open-not-yet-filled. Sort by something that looks like a dewey number (or running number),
     // then alphabetically.
     var sorted =
@@ -114,6 +114,7 @@ public class HomeController {
             .filter(
                 p ->
                     p.visiting() == visitors
+                        && !p.parked()
                         && PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED
                             .getCode()
                             .equalsIgnoreCase(p.request().status()))
