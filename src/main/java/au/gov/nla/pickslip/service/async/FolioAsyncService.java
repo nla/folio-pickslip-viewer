@@ -45,7 +45,7 @@ public class FolioAsyncService {
   private FOLIOAPICredentials folioOkapiCredentials;
 
   @PostConstruct
-  public void init() throws IOException {
+  public void init() throws IOException, InterruptedException {
 
     folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(this.folioOkapiCredentialsMap);
 

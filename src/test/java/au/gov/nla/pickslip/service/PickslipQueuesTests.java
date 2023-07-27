@@ -22,7 +22,7 @@ public class PickslipQueuesTests {
     @Spy FolioService folioService;
 
     @Test
-    void updatePickslipQueues() throws IOException {
+    void updatePickslipQueues() throws IOException, InterruptedException {
 
         // Mockito.when..
         Mockito.doReturn(TestUtils.loadJson("folioServicePoints.json"))

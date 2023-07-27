@@ -67,7 +67,7 @@ public class ScheduledRequestRetrieverService {
   // event listener and scheduler will be on different threads
   @Scheduled(cron = "${schedule.retriever.cron}")
   @EventListener(ContextRefreshedEvent.class)
-  public synchronized void fetch() throws IOException {
+  public synchronized void fetch() throws IOException, InterruptedException {
 
     try {
       this.lastStarted = LocalDateTime.now();

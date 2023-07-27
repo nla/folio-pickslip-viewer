@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>au.gov.nla</groupId>
 			<artifactId>folio-api</artifactId>
-			<version>1.0.13-RELEASE</version>
+			<version>1.0.X-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

@@ -59,7 +59,7 @@ public class FolioService {
         .collect(Collectors.toMap(FolioInstance::id, v -> v, (k1, k2) -> k1));
   }
 
-  public List<FolioServicePoint> getFolioServicePoints() throws IOException {
+  public List<FolioServicePoint> getFolioServicePoints() throws IOException, InterruptedException {
 
     JsonNode n = folioApiGetServicePoints();
 
@@ -86,7 +86,7 @@ public class FolioService {
     return result;
   }
 
-  public List<FolioLocation> getFolioLocations() throws IOException {
+  public List<FolioLocation> getFolioLocations() throws IOException, InterruptedException {
 
     JsonNode n = folioApiGetFolioLocations();
 
@@ -113,7 +113,7 @@ public class FolioService {
   }
 
   public Map<FolioServicePoint, List<FolioPickslip>> getPickslipsForServicePoints(
-      List<FolioServicePoint> servicePoints) throws IOException {
+      List<FolioServicePoint> servicePoints) throws IOException, InterruptedException {
 
     Map<FolioServicePoint, List<FolioPickslip>> result = new HashMap<>();
     for (var sp : servicePoints) {
@@ -128,7 +128,8 @@ public class FolioService {
     return result;
   }
 
-  public List<FolioPickslip> getPickslipsForServicePoint(String id) throws IOException {
+  public List<FolioPickslip> getPickslipsForServicePoint(String id)
+      throws IOException, InterruptedException {
 
     JsonNode n = folioApiGetPickslipsForServicePoint(id, folioPickslipsLimit);
 
@@ -174,7 +175,7 @@ public class FolioService {
     return result;
   }
 
-  public List<FolioRequest> getFolioRequests() throws IOException {
+  public List<FolioRequest> getFolioRequests() throws IOException, InterruptedException {
 
     JsonNode n = folioApiGetRequests();
 
@@ -226,21 +227,21 @@ public class FolioService {
 
   // for spy / mock accessibility:
 
-  protected JsonNode folioApiGetServicePoints() throws IOException {
+  protected JsonNode folioApiGetServicePoints() throws IOException, InterruptedException {
     return new FOLIOServicePointRetrieverAPI(folioOkapiCredentials).getServicePoints();
   }
 
-  protected JsonNode folioApiGetFolioLocations() throws IOException {
+  protected JsonNode folioApiGetFolioLocations() throws IOException, InterruptedException {
     return new FOLIOLocationsRetrieverAPI(folioOkapiCredentials).getLocations();
   }
 
   protected JsonNode folioApiGetPickslipsForServicePoint(String id, int folioPickslipsLimit)
-      throws IOException {
+      throws IOException, InterruptedException {
     return new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials)
         .getPickslipsForServicePoint(id, folioPickslipsLimit);
   }
 
-  protected JsonNode folioApiGetRequests() throws IOException {
+  protected JsonNode folioApiGetRequests() throws IOException, InterruptedException {
     return new FOLIORequestsRetrieverAPI(folioOkapiCredentials)
         .getRequestsByStatus(
             List.of(
