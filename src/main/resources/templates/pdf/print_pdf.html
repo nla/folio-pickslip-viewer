@@ -80,8 +80,8 @@
 
                 <div class="access-info">
                     <table>
-                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${instance.accessConditions} ?: '-'"/> </tr>
-                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${#strings.abbreviate(instance.termsOfUse,200)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
                     </table>
                 </div>
             </div>
@@ -171,8 +171,8 @@
 
                 <div class="access-info">
                     <table>
-                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${instance.accessConditions} ?: '-'"/> </tr>
-                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${#strings.abbreviate(instance.termsOfUse,200)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
                     </table>
                 </div>
             </div>
