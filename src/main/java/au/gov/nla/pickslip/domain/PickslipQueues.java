@@ -308,6 +308,13 @@ public class PickslipQueues {
         }
       }
     }
+
+    // sort: status; then by request date.  Head of list is most recent; "In transit" status at end.
+    result.sort(
+        Comparator.comparing((Pickslip a) -> a.request.status)
+            .thenComparing(a -> a.request.requestDate)
+            .reversed());
+
     return result;
   }
 
