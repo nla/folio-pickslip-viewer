@@ -76,6 +76,7 @@
 
                 <table>
                     <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Note:</td>                        <td th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
                 </table>
 
                 <div class="access-info">

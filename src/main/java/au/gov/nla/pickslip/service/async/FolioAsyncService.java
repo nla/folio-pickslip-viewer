@@ -113,8 +113,8 @@ public class FolioAsyncService {
         new FolioInstance(
             n.at("/id").asText(null),
             n.at("/hrid").asText(null),
-            flatten(n, "/publicationPlace", "/place"),
-            flatten(n, "/publicationDate", "/dateOfPublication"),
+            flatten(n, "/publication", "/place"),
+            flatten(n, "/publication", "/dateOfPublication"),
             flatten(n, "/physicalDescriptions", null),
             flatten(n, "/editions", null),
             flatten(n, "/series", "/value"),

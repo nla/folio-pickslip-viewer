@@ -2,6 +2,7 @@ package au.gov.nla.pickslip.service;
 
 import au.gov.nla.pickslip.domain.PickslipQueues;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code128Writer;
@@ -40,6 +41,9 @@ public class PdfResponderService {
         new ResourceLoaderUserAgent(renderer.getOutputDevice());
     resourceLoaderUA.setSharedContext(renderer.getSharedContext());
     renderer.getSharedContext().setUserAgentCallback(resourceLoaderUA);
+    renderer
+        .getFontResolver()
+        .addFont("pdf/fonts/NotoSans-Regular.ttf", BaseFont.IDENTITY_H, false);
   }
 
   public static String generateCode128BarcodeImage(String barcodeText) throws Exception {
@@ -50,7 +54,11 @@ public class PdfResponderService {
 
     Code128Writer barcodeWriter = new Code128Writer();
 
-    BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.CODE_128, 150, 50);
+    Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+    hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+    hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
+
+    BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.CODE_128, 150, 50, hints);
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     MatrixToImageWriter.writeToStream(bitMatrix, "png", bos);
@@ -65,6 +73,8 @@ public class PdfResponderService {
 
       var instanceIdList = pickslipList.stream().map(p -> p.instance().id()).toList();
       var instances = folioService.getFolioInstances(instanceIdList);
+
+      log.debug("Retrieved instances {}", instances.keySet());
 
       PdfCopy writer = new PdfCopy(out, os);
       out.open();
