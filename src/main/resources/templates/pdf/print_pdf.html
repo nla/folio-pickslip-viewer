@@ -104,9 +104,9 @@
                 </table>
 
                 <div class="ms-info">
-                    <p class="snug" th:text="${#strings.abbreviate(pickslip.item.yearCaption,50)}"/>
-                    <p class="snug" th:text="${#strings.abbreviate(pickslip.item.enumeration,50)}"/>
-                    <p class="snug" th:text="${#strings.abbreviate(pickslip.item.chronology,50)}"/>
+                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.yearCaption,50)}"/>
+                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,50)}"/>
+                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,50)}"/>
                 </div>
 
                 <div class="barcode">
@@ -115,16 +115,16 @@
                 </div>
 
                 <div class="patron-info">
-                    <p>
+                    <p class="heavy-font">
                         <span th:text="(${pickslip.request.requester.firstName} ?: '-') + ' ' +
                                        (${pickslip.request.requester.lastName} ?: '-')"/>
                     </p>
                     <p class="heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
                 </div>
 
-                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+                <p class="heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
 
-                <p class="spaced-above" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
+                <p class="spaced-above heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
 
                 <p class="heavy-font font-large spaced-above-xl" th:text="${pickslip.item.callNumber}" />
             </div>
