@@ -9,7 +9,7 @@
 		<version>3.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>au.gov.anl</groupId>
+	<groupId>au.gov.nla</groupId>
 	<artifactId>folio-pickslip-viewer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>folio-pickslip-viewer</name>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>au.gov.nla</groupId>
 			<artifactId>folio-api</artifactId>
-			<version>1.0.13-RELEASE</version>
+			<version>1.0.14-RELEASE</version>
 		</dependency>
 
 		<dependency>

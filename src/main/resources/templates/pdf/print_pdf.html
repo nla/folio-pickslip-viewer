@@ -20,19 +20,19 @@
                 <div class="patron-info">
                     <p>
                         <span class ="font-large heavy-font" th:text="${pickslip.request.requester.lastName} ?: '-'" />,
-                        <span th:text="${pickslip.request.requester.firstName} ?: '-'" />
+                        <span class="heavy-font" th:text="${pickslip.request.requester.firstName} ?: '-'" />
                     </p>
                     <p class="font-large heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
                     <p class="font-large heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy')}"/>
                     <p class="font-large heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
                 </div>
 
-                <p class="spaced-above-xl" th:text="${pickslip.item.callNumber}" />
-                <p th:text="${#strings.abbreviate(pickslip.item.title,100)} ?: '-'"/>
+                <p class="spaced-above-xl heavy-font" th:text="${pickslip.item.callNumber}" />
+                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,100)} ?: '-'"/>
                 <table>
                     <tr class="spaced-above">
                         <td class="label-left">Author:</td>
-                        <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
+                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
                     </tr>
                 </table>
 
@@ -45,7 +45,7 @@
                 <table>
                     <tr class="spaced-above">
                         <td class="label-left">Author:</td>
-                        <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,200)} ?: '-'"/>
+                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,200)} ?: '-'"/>
                     </tr>
                 </table>
             </div>
@@ -54,13 +54,13 @@
         <div class="rhs-2 border">
             <div class="content">
                 <table class="w100">
-                    <tr> <td class="label-left">Bib Id:</td>    <td th:text="${instance.hrid} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Spine:</td>     <td th:text="${#strings.abbreviate(instance.spineLabel,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Imprint:</td>   <td th:text="(${#strings.abbreviate(instance.publicationPlace,100)} ?: '-') + ' ' +
-                                                                             (${#strings.abbreviate(instance.publicationDateOfPublication,100)} ?: '-')"/> </tr>
-                    <tr> <td class="label-left">Collation:</td> <td th:text="${#strings.abbreviate(instance.physicalDescriptions,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Edition:</td>   <td th:text="${instance.editions} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Series:</td>    <td th:text="${#strings.abbreviate(instance.series,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Bib Id:</td>    <td class="heavy-font" th:text="${instance.hrid} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Spine:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(instance.spineLabel,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Imprint:</td>   <td class="heavy-font" th:text="(${#strings.abbreviate(instance.publicationPlace,100)} ?: '-') + ' ' +
+                                                                                                (${#strings.abbreviate(instance.publicationDateOfPublication,100)} ?: '-')"/> </tr>
+                    <tr> <td class="label-left">Collation:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.physicalDescriptions,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Edition:</td>   <td class="heavy-font" th:text="${instance.editions} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Series:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(instance.series,200)} ?: '-'"/> </tr>
                 </table>
             </div>
         </div>
@@ -69,19 +69,20 @@
             <div class="content">
 
                 <table>
-                    <tr> <td class="label-left">Serial year / MS box:</td>        <td th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td th:text="${#strings.abbreviate(pickslip.item.enumeration,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td th:text="${#strings.abbreviate(pickslip.item.chronology,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,200)} ?: '-'"/> </tr>
                 </table>
 
                 <table>
-                    <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Copy:</td>                        <td class="heavy-font" th:text="${pickslip.item.copy} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Note:</td>                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
                 </table>
 
                 <div class="access-info">
                     <table>
-                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
-                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Access conditions:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td class="heavy-font" th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
                     </table>
                 </div>
             </div>
@@ -98,14 +99,14 @@
                 <table>
                     <tr class="spaced-above">
                         <td class="label-left">Author:</td>
-                        <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
+                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
                     </tr>
                 </table>
 
                 <div class="ms-info">
-                    <p class="snug" th:text="${#strings.abbreviate(pickslip.item.yearCaption,50)}"/>
-                    <p class="snug" th:text="${#strings.abbreviate(pickslip.item.enumeration,50)}"/>
-                    <p class="snug" th:text="${#strings.abbreviate(pickslip.item.chronology,50)}"/>
+                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.yearCaption,50)}"/>
+                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,50)}"/>
+                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,50)}"/>
                 </div>
 
                 <div class="barcode">
@@ -114,16 +115,16 @@
                 </div>
 
                 <div class="patron-info">
-                    <p>
+                    <p class="heavy-font">
                         <span th:text="(${pickslip.request.requester.firstName} ?: '-') + ' ' +
                                        (${pickslip.request.requester.lastName} ?: '-')"/>
                     </p>
                     <p class="heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
                 </div>
 
-                <p th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+                <p class="heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
 
-                <p class="spaced-above" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
+                <p class="spaced-above heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
 
                 <p class="heavy-font font-large spaced-above-xl" th:text="${pickslip.item.callNumber}" />
             </div>
@@ -135,7 +136,7 @@
                 <table>
                     <tr class="spaced-above">
                         <td class="label-left">Author:</td>
-                        <td th:text="${#strings.abbreviate(pickslip.item.primaryContributor,200)} ?: '-'"/>
+                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,200)} ?: '-'"/>
                     </tr>
                 </table>
             </div>
@@ -144,13 +145,13 @@
         <div class="rhs-2 border">
             <div class="content">
                 <table class="w100">
-                    <tr> <td class="label-left">Bib Id:</td>    <td th:text="${instance.hrid} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Spine:</td>     <td th:text="${#strings.abbreviate(instance.spineLabel,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Imprint:</td>   <td th:text="(${#strings.abbreviate(instance.publicationPlace,100)} ?: '-') + ' ' +
-                                                                             (${#strings.abbreviate(instance.publicationDateOfPublication,100)} ?: '-')"/> </tr>
-                    <tr> <td class="label-left">Collation:</td> <td th:text="${#strings.abbreviate(instance.physicalDescriptions,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Edition:</td>   <td th:text="${#strings.abbreviate(instance.editions,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Series:</td>    <td th:text="${#strings.abbreviate(instance.series,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Bib Id:</td>    <td class="heavy-font" th:text="${instance.hrid} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Spine:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(instance.spineLabel,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Imprint:</td>   <td class="heavy-font" th:text="(${#strings.abbreviate(instance.publicationPlace,100)} ?: '-') + ' ' +
+                                                                                                (${#strings.abbreviate(instance.publicationDateOfPublication,100)} ?: '-')"/> </tr>
+                    <tr> <td class="label-left">Collation:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.physicalDescriptions,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Edition:</td>   <td class="heavy-font" th:text="${#strings.abbreviate(instance.editions,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Series:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(instance.series,200)} ?: '-'"/> </tr>
                 </table>
             </div>
         </div>
@@ -159,20 +160,20 @@
             <div class="content">
 
                 <table>
-                    <tr> <td class="label-left">Serial year / MS box:</td>        <td th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td th:text="${#strings.abbreviate(pickslip.item.enumeration,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td th:text="${#strings.abbreviate(pickslip.item.chronology,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,200)} ?: '-'"/> </tr>
                 </table>
 
                 <table>
-                    <tr> <td class="label-left">Copy:</td>                        <td th:text="${pickslip.item.copy} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Note:</td>                        <td th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Copy:</td>                        <td class="heavy-font" th:text="${pickslip.item.copy} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Note:</td>                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
                 </table>
 
                 <div class="access-info">
                     <table>
-                        <tr> <td class="label-left">Access conditions:</td> <td th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
-                        <tr> <td class="label-left">Terms of use:</td>      <td th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Access conditions:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td class="heavy-font" th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
                     </table>
                 </div>
             </div>
