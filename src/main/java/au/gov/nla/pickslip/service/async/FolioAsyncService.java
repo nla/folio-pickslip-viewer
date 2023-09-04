@@ -1,5 +1,6 @@
 package au.gov.nla.pickslip.service.async;
 
+import au.gov.nla.folio.api.FOLIOAlternativeTitleTypesAPI;
 import au.gov.nla.folio.api.FOLIOInstanceNoteTypesAPI;
 import au.gov.nla.folio.api.FOLIOInventoryAPI;
 import au.gov.nla.folio.api.credentials.FOLIOAPICredentials;
@@ -10,7 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
@@ -31,9 +34,13 @@ public class FolioAsyncService {
   @Value("${folio.note-type.spine-label}")
   private String folioSpineLabelNoteType;
 
+  @Value("${folio.alt-title-type.variant-title}")
+  private String folioVariantTitleAltTitleType;
+
   String folioAccessConditionsUuid;
   String folioTermsOfUseNoteUuid;
   String folioSpineLabelNoteTypeUuid;
+  String folioVariantTitleAltTitleTypeUuid;
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -59,6 +66,12 @@ public class FolioAsyncService {
     this.folioSpineLabelNoteTypeUuid =
         folioInstanceNoteTypesAPI.resolveNoteType(folioSpineLabelNoteType);
 
+    FOLIOAlternativeTitleTypesAPI folioAlternativeTitleTypesAPI =
+        new FOLIOAlternativeTitleTypesAPI(folioOkapiCredentials);
+
+    this.folioVariantTitleAltTitleTypeUuid =
+        folioAlternativeTitleTypesAPI.resolveAlternativeTitleType(folioVariantTitleAltTitleType);
+
     if (folioAccessConditionsUuid == null || folioAccessConditionsUuid.isBlank()) {
       throw new IllegalStateException(
           "Can't initialize: can't resolve instance note type - access conditions");
@@ -70,6 +83,10 @@ public class FolioAsyncService {
     if (folioSpineLabelNoteTypeUuid == null || folioSpineLabelNoteTypeUuid.isBlank()) {
       throw new IllegalStateException(
           "Can't initialize: can't resolve instance note types - spine label");
+    }
+    if (folioVariantTitleAltTitleTypeUuid == null || folioVariantTitleAltTitleTypeUuid.isBlank()) {
+      throw new IllegalStateException(
+          "Can't initialize: can't resolve instance alternative title types - variant title");
     }
   }
 
@@ -88,7 +105,7 @@ public class FolioAsyncService {
         }
       }
     }
-    return result.size() == 0 ? null : String.join(", ", result);
+    return result.isEmpty() ? null : String.join(", ", result);
   }
 
   private String extractNote(JsonNode node, String noteId) {
@@ -101,6 +118,25 @@ public class FolioAsyncService {
       }
     }
     return null;
+  }
+
+  private List<String> extractAltTitles(JsonNode node, String alternativeTitleId) {
+
+    ArrayList<String> altTitles = new ArrayList<>();
+
+    JsonNode arrayNode = node.at("/alternativeTitles");
+    if (arrayNode != null && arrayNode.isArray()) {
+      for (JsonNode jsonNode : arrayNode) {
+        if (alternativeTitleId.equals(jsonNode.at("/alternativeTitleTypeId").textValue())) {
+          String s = jsonNode.at("/alternativeTitle").textValue();
+          if (s != null) {
+            altTitles.add(
+                Normalizer.normalize(s, Normalizer.Form.NFC)); // renderer don't do decomposed..
+          }
+        }
+      }
+    }
+    return altTitles;
   }
 
   @Async
@@ -118,6 +154,7 @@ public class FolioAsyncService {
             flatten(n, "/physicalDescriptions", null),
             flatten(n, "/editions", null),
             flatten(n, "/series", "/value"),
+            extractAltTitles(n, this.folioVariantTitleAltTitleTypeUuid),
             extractNote(n, this.folioAccessConditionsUuid),
             extractNote(n, this.folioTermsOfUseNoteUuid),
             extractNote(n, this.folioSpineLabelNoteTypeUuid));

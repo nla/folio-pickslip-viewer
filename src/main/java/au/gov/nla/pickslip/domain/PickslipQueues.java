@@ -33,13 +33,6 @@ public class PickslipQueues {
 
   // backing source data - FOLIO and config file data.
 
-  // all not filled requests
-  private List<FolioRequest> sourceNotFilledRequests;
-  private List<FolioServicePoint> sourceServicePoints;
-
-  // service point code -> pickslips
-  private Map<String, List<FolioPickslip>> sourcePickSlips;
-
   // derived data model for this app.
   private Map<ServicePoint, List<Pickslip>> servicePointPickslips;
 
@@ -222,7 +215,7 @@ public class PickslipQueues {
           folioPickslipsByServicePoint) { // all pickslips for NOT YET FILLED requests for all
     // service points
 
-    // loc->FolioSp
+    // loc -> FolioSp
     List<ServicePoint> servicePoints =
         stackLocations.getStacks().stream()
             .map(
@@ -235,7 +228,7 @@ public class PickslipQueues {
 
     List<String> servicePointCodes = servicePoints.stream().map(ServicePoint::code).toList();
 
-    // code - >service point
+    // code -> service point
     Map<String, ServicePoint> locationServicePointMap = new HashMap<>();
     for (var fLoc : folioLocations) {
       for (var xSp : servicePoints) {
@@ -292,6 +285,10 @@ public class PickslipQueues {
   // for all pickslips - pick out the ones with a tag which corresponds to stackCode.
   public List<Pickslip> getVisitorsForStack(String stackCode) {
     List<Pickslip> result = new ArrayList<>();
+
+    if (servicePointPickslips == null) {
+      return null;
+    }
 
     for (var servicePoint : servicePointPickslips.keySet()) {
       if (!stackCode.equalsIgnoreCase(servicePoint.code())) {

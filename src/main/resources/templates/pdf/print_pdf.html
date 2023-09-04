@@ -13,54 +13,90 @@
         <div class="lhs border">
             <div class="content">
                 <div class="barcode">
-                    <img class="barcode128" th:src="${barcode64}"/>
+                    <img class="barcode128" th:src="${itemBarcode64}"/>
                     <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'" />
                 </div>
 
                 <div class="patron-info">
+                    <p class="font-large heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
                     <p>
                         <span class ="font-large heavy-font" th:text="${pickslip.request.requester.lastName} ?: '-'" />,
-                        <span class="heavy-font" th:text="${pickslip.request.requester.firstName} ?: '-'" />
+                        <span class="font-large" th:text="${pickslip.request.requester.firstName} ?: '-'" />
                     </p>
-                    <p class="font-large heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
-                    <p class="font-large heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy')}"/>
+                    <p>
+                        <span class="font-large heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy')}"/>
+                        <span class="font-large" th:text="${#temporals.format(pickslip.request.requestDate, 'HH:mm:ss')}"/>
+                    </p>
+
                     <p class="font-large heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+
                 </div>
 
-                <p class="spaced-above-xl heavy-font" th:text="${pickslip.item.callNumber}" />
-                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,100)} ?: '-'"/>
+                <p class="spaced-above">
+                    <span class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,80)} ?: '-'"/>
+                    <th:block th:each="variantTitle : ${instance.variantTitles}">
+                        <span>,</span>
+                        <span th:style="|font-family: ${unicodeFontMap.getBestFontFamilyFor(variantTitle)}}|"
+                              th:text="${#strings.abbreviate(variantTitle,10)} ?: ''" />
+                    </th:block>
+                </p>
+
                 <table>
-                    <tr class="spaced-above">
+                    <tr>
                         <td class="label-left">Author:</td>
-                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
+                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,50)} ?: '-'"/>
                     </tr>
                 </table>
 
+                <p class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/>
+                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,40)} ?: '-'"/>
+                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,40)} ?: '-'"/>
+
+            </div>
+            <div class="lhs-callnumber">
+                <p class="heavy-font font-large" th:text="${pickslip.item.callNumber}" />
             </div>
         </div>
 
         <div class="rhs-1 border">
             <div class="content">
-                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,200)} ?: '-'"/>
-                <table>
-                    <tr class="spaced-above">
-                        <td class="label-left">Author:</td>
-                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,200)} ?: '-'"/>
-                    </tr>
-                </table>
+
+                <p class="w70 font-large heavy-font" th:text="${pickslip.item.callNumber}" />
+
+                <p class="spaced-above">
+                    <span class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,150)} ?: '-'"/>
+                    <th:block th:each="variantTitle : ${instance.variantTitles}">
+                        <span>,</span>
+                        <span th:style="|font-family: ${unicodeFontMap.getBestFontFamilyFor(variantTitle)}}|"
+                              th:text="${#strings.abbreviate(variantTitle,50)} ?: ''" />
+                    </th:block>
+                </p>
+
+                <div class="spaced-above">
+                    <table class="w100">
+                        <tr> <td class="label-left">Author:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,150)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Bib Id:</td>    <td class="heavy-font" th:text="${instance.hrid} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Spine:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(instance.spineLabel,80)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Imprint:</td>   <td class="heavy-font" th:text="(${#strings.abbreviate(instance.publicationPlace,80)} ?: '-') + ' ' +
+                                                                                                    (${#strings.abbreviate(instance.publicationDateOfPublication,80)} ?: '-')"/> </tr>
+                        <tr> <td class="label-left">Collation:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.physicalDescriptions,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Edition:</td>   <td class="heavy-font" th:text="${instance.editions} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Series:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(instance.series,150)} ?: '-'"/> </tr>
+                    </table>
+                </div>
+
+                <div class="patron-barcode">
+                    <img class="barcode128" th:src="${patronBarcode64}"/>
+                </div>
             </div>
         </div>
 
         <div class="rhs-2 border">
             <div class="content">
                 <table class="w100">
-                    <tr> <td class="label-left">Bib Id:</td>    <td class="heavy-font" th:text="${instance.hrid} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Spine:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(instance.spineLabel,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Imprint:</td>   <td class="heavy-font" th:text="(${#strings.abbreviate(instance.publicationPlace,100)} ?: '-') + ' ' +
-                                                                                                (${#strings.abbreviate(instance.publicationDateOfPublication,100)} ?: '-')"/> </tr>
-                    <tr> <td class="label-left">Collation:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.physicalDescriptions,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Edition:</td>   <td class="heavy-font" th:text="${instance.editions} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Series:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(instance.series,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,150)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,150)} ?: '-'"/> </tr>
                 </table>
             </div>
         </div>
@@ -69,14 +105,7 @@
             <div class="content">
 
                 <table>
-                    <tr> <td class="label-left">Serial year / MS box:</td>        <td class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,200)} ?: '-'"/> </tr>
-                </table>
-
-                <table>
-                    <tr> <td class="label-left">Copy:</td>                        <td class="heavy-font" th:text="${pickslip.item.copy} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Note:</td>                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Note:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
                 </table>
 
                 <div class="access-info">
@@ -94,64 +123,91 @@
 
         <div class="lhs border">
             <div class="content">
-                <p class="spaced-below-xl heavy-font font-large" th:text="${pickslip.item.callNumber}" />
-                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,100)} ?: '-'"/>
-                <table>
-                    <tr class="spaced-above">
-                        <td class="label-left">Author:</td>
-                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,100)} ?: '-'"/>
-                    </tr>
-                </table>
-
-                <div class="ms-info">
-                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.yearCaption,50)}"/>
-                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,50)}"/>
-                    <p class="snug heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,50)}"/>
-                </div>
-
                 <div class="barcode">
-                    <img class="barcode128" th:src="${barcode64}"/>
+                    <img class="barcode128" th:src="${itemBarcode64}"/>
                     <p class="barcodetext align-center" th:text="${pickslip.item.barcode} ?: '-'" />
                 </div>
 
                 <div class="patron-info">
-                    <p class="heavy-font">
-                        <span th:text="(${pickslip.request.requester.firstName} ?: '-') + ' ' +
-                                       (${pickslip.request.requester.lastName} ?: '-')"/>
+                    <p class="font-large heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
+                    <p>
+                        <span class ="font-large heavy-font" th:text="${pickslip.request.requester.lastName} ?: '-'" />,
+                        <span class="font-large" th:text="${pickslip.request.requester.firstName} ?: '-'" />
                     </p>
-                    <p class="heavy-font" th:text="${pickslip.request.patronGroup} ?: '-'"/>
+                    <p>
+                        <span class="font-large heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy')}"/>
+                        <span class="font-large" th:text="${#temporals.format(pickslip.request.requestDate, 'HH:mm:ss')}"/>
+                    </p>
+
+                    <p class="font-large heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+
                 </div>
 
-                <p class="heavy-font" th:text="${pickslip.item.effectiveLocationSpecific} ?: '-'"/>
+                <p class="spaced-above">
+                    <span class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,80)} ?: '-'"/>
+                    <th:block th:each="variantTitle : ${instance.variantTitles}">
+                        <span>,</span>
+                        <span th:style="|font-family: ${unicodeFontMap.getBestFontFamilyFor(variantTitle)}}|"
+                              th:text="${#strings.abbreviate(variantTitle,10)} ?: ''" />
+                    </th:block>
+                </p>
 
-                <p class="spaced-above heavy-font" th:text="${#temporals.format(pickslip.request.requestDate, 'dd-MMM-yyyy HH:mm:ss')}"/>
+                <table>
+                    <tr>
+                        <td class="label-left">Author:</td>
+                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,50)} ?: '-'"/>
+                    </tr>
+                </table>
 
-                <p class="heavy-font font-large spaced-above-xl" th:text="${pickslip.item.callNumber}" />
+                <p class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/>
+                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,40)} ?: '-'"/>
+                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,40)} ?: '-'"/>
+
+            </div>
+            <div class="lhs-callnumber">
+                <p class="heavy-font font-large" th:text="${pickslip.item.callNumber}" />
             </div>
         </div>
 
         <div class="rhs-1 border">
             <div class="content">
-                <p class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,200)} ?: '-'"/>
-                <table>
-                    <tr class="spaced-above">
-                        <td class="label-left">Author:</td>
-                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,200)} ?: '-'"/>
-                    </tr>
-                </table>
+
+                <p class="w70 font-large heavy-font" th:text="${pickslip.item.callNumber}" />
+
+                <p class="spaced-above">
+                    <span class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.title,150)} ?: '-'"/>
+                    <th:block th:each="variantTitle : ${instance.variantTitles}">
+                        <span>,</span>
+                        <span th:style="|font-family: ${unicodeFontMap.getBestFontFamilyFor(variantTitle)}}|"
+                              th:text="${#strings.abbreviate(variantTitle,50)} ?: ''" />
+                    </th:block>
+                </p>
+
+                <div class="spaced-above">
+                    <table class="w100">
+                        <tr> <td class="label-left">Author:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.primaryContributor,150)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Bib Id:</td>    <td class="heavy-font" th:text="${instance.hrid} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Spine:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(instance.spineLabel,80)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Imprint:</td>   <td class="heavy-font" th:text="(${#strings.abbreviate(instance.publicationPlace,80)} ?: '-') + ' ' +
+                                                                                                    (${#strings.abbreviate(instance.publicationDateOfPublication,80)} ?: '-')"/> </tr>
+                        <tr> <td class="label-left">Collation:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.physicalDescriptions,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Edition:</td>   <td class="heavy-font" th:text="${instance.editions} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Series:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(instance.series,150)} ?: '-'"/> </tr>
+                    </table>
+                </div>
+
+                <div class="patron-barcode">
+                    <img class="barcode128" th:src="${patronBarcode64}"/>
+                </div>
             </div>
         </div>
 
         <div class="rhs-2 border">
             <div class="content">
                 <table class="w100">
-                    <tr> <td class="label-left">Bib Id:</td>    <td class="heavy-font" th:text="${instance.hrid} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Spine:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(instance.spineLabel,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Imprint:</td>   <td class="heavy-font" th:text="(${#strings.abbreviate(instance.publicationPlace,100)} ?: '-') + ' ' +
-                                                                                                (${#strings.abbreviate(instance.publicationDateOfPublication,100)} ?: '-')"/> </tr>
-                    <tr> <td class="label-left">Collation:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.physicalDescriptions,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Edition:</td>   <td class="heavy-font" th:text="${#strings.abbreviate(instance.editions,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Series:</td>    <td class="heavy-font" th:text="${#strings.abbreviate(instance.series,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Serial year / MS box:</td>        <td class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,150)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,150)} ?: '-'"/> </tr>
                 </table>
             </div>
         </div>
@@ -160,14 +216,7 @@
             <div class="content">
 
                 <table>
-                    <tr> <td class="label-left">Serial year / MS box:</td>        <td class="heavy-font" th:text="${pickslip.item.yearCaption} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Enumeration / MS series:</td>     <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.enumeration,200)} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Chronology / MS folder/item:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.item.chronology,200)} ?: '-'"/> </tr>
-                </table>
-
-                <table>
-                    <tr> <td class="label-left">Copy:</td>                        <td class="heavy-font" th:text="${pickslip.item.copy} ?: '-'"/> </tr>
-                    <tr> <td class="label-left">Note:</td>                        <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
+                    <tr> <td class="label-left">Note:</td> <td class="heavy-font" th:text="${#strings.abbreviate(pickslip.request.patronComments,200)} ?: '-'"/> </tr>
                 </table>
 
                 <div class="access-info">

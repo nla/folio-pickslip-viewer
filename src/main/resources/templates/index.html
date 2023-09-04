@@ -43,7 +43,7 @@
                                                 [[${loc.label}]]
                                             </a>
 
-                                            <th:block th:with="reassigned = ${queues.getVisitorsForStack(loc.code).size}">
+                                            <th:block th:with="reassigned = ${queues.getVisitorsForStack(loc.code)?.size ?: 0}">
                                                 <a th:if="${reassigned} > 0"
                                                    th:href="${showOnly} ? @{/location/{code}(code = ${loc.code},showOnly=${showOnly})}
                                                                         : @{/location/{code}(code = ${loc.code})}">
