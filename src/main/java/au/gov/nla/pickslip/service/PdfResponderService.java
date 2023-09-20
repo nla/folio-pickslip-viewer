@@ -1,5 +1,6 @@
 package au.gov.nla.pickslip.service;
 
+import au.gov.nla.pickslip.UnicodeFontMap;
 import au.gov.nla.pickslip.domain.PickslipQueues;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -30,6 +31,8 @@ public class PdfResponderService {
 
   @Autowired SpringTemplateEngine templateEngine;
 
+  @Autowired UnicodeFontMap unicodeFontMap;
+
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
   private ITextRenderer renderer;
@@ -41,12 +44,23 @@ public class PdfResponderService {
         new ResourceLoaderUserAgent(renderer.getOutputDevice());
     resourceLoaderUA.setSharedContext(renderer.getSharedContext());
     renderer.getSharedContext().setUserAgentCallback(resourceLoaderUA);
-    renderer
-        .getFontResolver()
-        .addFont("pdf/fonts/NotoSans-Regular.ttf", BaseFont.IDENTITY_H, false);
+
+    var resolver = renderer.getFontResolver();
+    resolver.addFont("pdf/fonts/NotoSans-Regular.ttf", BaseFont.IDENTITY_H, false);
+
+    resolver.addFont("pdf/fonts/NotoSansKR-VF.ttf", BaseFont.IDENTITY_H, false);
+    resolver.addFont("pdf/fonts/NotoSansSC-VF.ttf", BaseFont.IDENTITY_H, false);
+    resolver.addFont("pdf/fonts/NotoSansJP-VF.ttf", BaseFont.IDENTITY_H, false);
+
+    resolver.addFont("pdf/fonts/NotoSansLao-Regular.ttf", BaseFont.IDENTITY_H, false);
+    resolver.addFont("pdf/fonts/NotoSansKhmer-Regular.ttf", BaseFont.IDENTITY_H, false);
+    resolver.addFont("pdf/fonts/NotoSansThai-Regular.ttf", BaseFont.IDENTITY_H, false);
+    resolver.addFont("pdf/fonts/NotoSansBalinese-Regular.ttf", BaseFont.IDENTITY_H, false);
+    resolver.addFont("pdf/fonts/NotoSansMyanmar-Regular.ttf", BaseFont.IDENTITY_H, false);
   }
 
-  public static String generateCode128BarcodeImage(String barcodeText) throws Exception {
+  public static String generateCode128BarcodeImage(String barcodeText, int width, int height)
+      throws Exception {
 
     if (barcodeText == null || barcodeText.isBlank()) {
       return null;
@@ -56,9 +70,10 @@ public class PdfResponderService {
 
     Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
     hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-    hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
+    hints.put(EncodeHintType.MARGIN, 4);
 
-    BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.CODE_128, 150, 50, hints);
+    BitMatrix bitMatrix =
+        barcodeWriter.encode(barcodeText, BarcodeFormat.CODE_128, width, height, hints);
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     MatrixToImageWriter.writeToStream(bitMatrix, "png", bos);
@@ -81,16 +96,25 @@ public class PdfResponderService {
 
       for (PickslipQueues.Pickslip pickslip : pickslipList) {
 
-        String image;
+        String itemBarcode, patronBarcode;
         try {
-          image = generateCode128BarcodeImage(pickslip.item().barcode());
+          itemBarcode = generateCode128BarcodeImage(pickslip.item().barcode(), 150, 50);
+          patronBarcode =
+              generateCode128BarcodeImage(pickslip.request().requester().barcode(), 80, 25);
         } catch (Exception e) {
           throw new RuntimeException(e);
         }
 
-        ctx.setVariable("barcode64", image != null ? "data:image/png;base64," + image : null);
+        ctx.setVariable(
+            "itemBarcode64",
+            itemBarcode != null ? "data:image/png;base64," + itemBarcode : null);
+        ctx.setVariable(
+            "patronBarcode64",
+            patronBarcode != null ? "data:image/png;base64," + patronBarcode : null);
+
         ctx.setVariable("instance", instances.get(pickslip.instance().id()));
         ctx.setVariable("pickslip", pickslip);
+        ctx.setVariable("unicodeFontMap", unicodeFontMap);
 
         String htmlContent = this.templateEngine.process("pdf/print_pdf", ctx);
 
