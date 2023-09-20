@@ -20,7 +20,7 @@ other dependencies.
 ## Printing
 
 Callslips (pickslips) can be printed via PDF files.  Pickslips are printed in 
-two halves, aligned to a performation in the paper.  Each pickslip is printed
+two halves, aligned to a perforation in the paper.  Each pickslip is printed
 to a single PDF using Flying Saucer with Open PDF.  Multiple pickslips can be
 printed (in which case single page PDF files are stitched together).
 
