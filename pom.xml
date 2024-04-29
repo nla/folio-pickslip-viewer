@@ -15,7 +15,9 @@
 	<name>folio-pickslip-viewer</name>
 	<description>FOLIO pickslip / request queue viewer</description>
 	<properties>
-		<java.version>18</java.version>
+		<java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
 	<dependencies>
