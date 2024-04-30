@@ -16,6 +16,8 @@
 	<description>FOLIO pickslip / request queue viewer</description>
 	<properties>
 		<java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -111,6 +113,8 @@
 	</dependencies>
 
 	<build>
+		
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
