@@ -6,5 +6,7 @@ FROM ${docker_registry}nla/ubi8-openjdk-17:latest
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /app/app.jar
 
-ENTRYPOINT ["bash", "-c", "java ${JAVA_OPTS} -jar /app/app.jar"]
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+# ENTRYPOINT ["bash", "-c", "java ${JAVA_OPTS} -jar /app/app.jar"]
 # ENTRYPOINT ["/docker-entrypoint.sh"]
