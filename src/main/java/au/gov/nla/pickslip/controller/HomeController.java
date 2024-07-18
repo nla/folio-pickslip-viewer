@@ -1,10 +1,17 @@
 package au.gov.nla.pickslip.controller;
 
 import au.gov.nla.pickslip.StackLocations;
+import au.gov.nla.pickslip.domain.FolioRequest;
 import au.gov.nla.pickslip.domain.PickslipQueues;
+import au.gov.nla.pickslip.dto.RequestNoteDto;
 import au.gov.nla.pickslip.service.FolioService;
 import au.gov.nla.pickslip.service.PdfResponderService;
+import au.gov.nla.pickslip.service.RequestEditService;
 import au.gov.nla.pickslip.service.ScheduledRequestRetrieverService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,8 +19,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +33,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@Slf4j
 public class HomeController {
 
   @Autowired PickslipQueues pickslipQueues;
@@ -35,7 +46,8 @@ public class HomeController {
 
   @Autowired StackLocations stackLocations;
 
-  private Logger log = LoggerFactory.getLogger(this.getClass());
+  @Autowired
+  RequestEditService requestEditService;
 
   @GetMapping("/export/{id}")
   public void export(@PathVariable String id, HttpServletResponse response) throws IOException {
@@ -170,5 +182,45 @@ public class HomeController {
       }
     }
     return (stackList != null && stackList.size() > 0) ? stackList : stackLocations.getStacks();
+  }
+
+  @GetMapping("/request/{requestId}/edit")
+  public String editRequest(@PathVariable final String requestId, final Model model) {
+    // TODO: check Folio permissions
+    boolean requestFailed = false;
+
+    try {
+      UUID.fromString(requestId);
+    } catch (IllegalArgumentException e) {
+      model.addAttribute("errorMessage", "Invalid request id");
+      requestFailed = true;
+    }
+
+    if (!requestFailed) {
+      model.addAttribute("requestId", requestId);
+      try {
+        FolioRequest folioRequest = requestEditService.getRequestById(requestId);
+        model.addAttribute("request", folioRequest);
+        model.addAttribute("requestNoteDto", new RequestNoteDto());
+      } catch (IOException e) {
+        model.addAttribute("errorMessage", "Error retrieving request from Folio");
+      } catch (Exception e) {
+        log.error("error", e);
+      }
+    }
+
+    return "edit-request.html";
+  }
+
+  @PostMapping("/request/{requestId}/edit")
+  public String editRequest(@PathVariable final String requestId, @ModelAttribute final RequestNoteDto requestNoteDto, final Model model) throws IOException {
+    // TODO: check Folio permissions
+    log.debug("id: {}, note: {}", requestNoteDto.getRequestId(), requestNoteDto.getCancellationAdditionalInformation());
+
+    if (requestNoteDto.getRequestId() != null && !requestNoteDto.getRequestId().trim().isEmpty() && requestNoteDto.getCancellationAdditionalInformation() != null && !requestNoteDto.getCancellationAdditionalInformation().trim().isEmpty()) {
+      folioService.updateRequest(requestNoteDto);
+    }
+
+    return "redirect:/request/" + requestId + "/edit" ;
   }
 }

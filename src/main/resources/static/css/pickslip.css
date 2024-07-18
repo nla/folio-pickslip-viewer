@@ -233,3 +233,11 @@ tr.stack-PIC-SP.heading      { border-bottom: 2px solid var(--stack-PIC-SP); }
 tr.stack-ASIAN-SP.heading    { border-bottom: 2px solid var(--stack-ASIAN-SP); }
 
 tr.heading { border-left: none; }
+
+.psv-text-large {
+    font-size: 150%;
+}
+
+.psv-bold {
+   font-weight: bold;
+}

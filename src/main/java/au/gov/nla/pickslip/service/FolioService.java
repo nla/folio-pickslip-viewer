@@ -4,9 +4,11 @@ import au.gov.nla.folio.api.*;
 import au.gov.nla.folio.api.credentials.FOLIOAPICredentials;
 import au.gov.nla.folio.util.FOLIOAPIUtils;
 import au.gov.nla.pickslip.domain.*;
+import au.gov.nla.pickslip.dto.RequestNoteDto;
 import au.gov.nla.pickslip.service.async.FolioAsyncService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.ZoneId;
@@ -204,6 +206,7 @@ public class FolioService {
                         r.at("/instanceId").asText(null),
                         r.at("/requesterId").asText(null),
                         r.at("/status").asText(null),
+                        r.at("/cancellationAdditionalInformation").asText(null),
                         r.at("/position").asText(null),
                         new FolioRequest.Instance(r.at("/instance/title").asText(null)),
                         new FolioRequest.Item(
@@ -223,7 +226,6 @@ public class FolioService {
 
     return result;
   }
-
   // for spy / mock accessibility:
 
   protected JsonNode folioApiGetServicePoints() throws IOException {
@@ -247,5 +249,72 @@ public class FolioService {
                 PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED.getCode(),
                 PickslipQueues.Pickslip.Request.Status.OPEN_IN_TRANSIT.getCode()),
             folioRequestsLimit);
+  }
+
+  public FolioRequest folioApiGetRequestById(final String requestId) throws IOException {
+    JsonNode folioRequestJson =
+        new FOLIORequestsRetrieverAPI(folioOkapiCredentials).getRequestById(requestId);
+
+    JsonNode requestDateNode = folioRequestJson.at("/requestDate");
+    ZonedDateTime requestDate =
+        requestDateNode.isNull()
+            ? null
+            : ZonedDateTime.parse(
+            requestDateNode.asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+    assert requestDate != null;
+    ZonedDateTime localRequestDate =
+        requestDate.withZoneSameInstant(ZoneId.systemDefault());
+
+    return
+        new FolioRequest(
+            folioRequestJson.at("/id")
+                .asText(null),
+            localRequestDate,
+            folioRequestJson.at("/patronComments")
+                .asText(null),
+            folioRequestJson.at("/itemId")
+                .asText(null),
+            folioRequestJson.at("/instanceId")
+                .asText(null),
+            folioRequestJson.at("/requesterId")
+                .asText(null),
+            folioRequestJson.at("/status")
+                .asText(null),
+            folioRequestJson.at("/cancellationAdditionalInformation").asText(null),
+            folioRequestJson.at("/position")
+                .asText(null),
+            new FolioRequest.Instance(folioRequestJson.at("/instance/title")
+                .asText(null)),
+            new FolioRequest.Item(
+                folioRequestJson.at("/item/barcode")
+                    .asText(null),
+                folioRequestJson.at("/item/callNumber")
+                    .asText(null),
+                new FolioRequest.Item.Location(
+                    folioRequestJson.at("/item/location/name")
+                        .asText(null),
+                    folioRequestJson.at("/item/location/code")
+                        .asText(null))),
+            new FolioRequest.Requester(
+                folioRequestJson.at("/requester/barcode")
+                    .asText(null),
+                folioRequestJson.at("/requester/patronGroupGroup")
+                    .asText(null)),
+            toList(folioRequestJson.at("/tagList")
+                .elements()));
+  }
+
+  public void updateRequest(final RequestNoteDto requestNoteDto) throws IOException {
+    FOLIORequestsRetrieverAPI folioRequestsRetrieverAPI =
+        new FOLIORequestsRetrieverAPI(folioOkapiCredentials);
+    JsonNode folioRequestJson =
+        folioRequestsRetrieverAPI.getRequestById(requestNoteDto.getRequestId());
+    if (folioRequestJson != null) {
+      ((ObjectNode) folioRequestJson).put("cancellationAdditionalInformation", requestNoteDto.getCancellationAdditionalInformation());
+      folioRequestsRetrieverAPI.updateRequest(requestNoteDto.getRequestId(), folioRequestJson);
+    } else {
+      log.error("Could not retrieve request with id: {}", requestNoteDto.getRequestId());
+    }
   }
 }

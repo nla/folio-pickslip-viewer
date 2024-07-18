@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title th:text="'Edit Request - National Library of Australia'"/>
+    <meta name="description" content="" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/pickslip.css}"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}" />
+
+    <script th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <meta name="viewport" content="width=device-width" />
+    <base th:href="@{/}" />
+</head>
+<body>
+
+<main>
+    <div class="row justify-content-md-center text-bg-primary" >
+        <div class="col col-lg-4 h3 p-3">Editing additional info for [[${requestId}]]</div>
+    </div>
+    <div th:if="${errorMessage}" class="row justify-content-md-center text-bg-danger" >
+        <div class="col col-lg-4 h3 p-3">[[${errorMessage}]]</div>
+    </div>
+    <div class="row justify-content-md-center pt-2">
+        <div class="col-2 psv-text-large psv-bold">Request id</div>
+        <div class="col-2 psv-text-large">[[ ${request.id} ]]</div>
+    </div>
+    <div class="row justify-content-md-center pt-2">
+        <div class="col-2 psv-text-large psv-bold">Instance title</div>
+        <div class="col-2 psv-text-large">[[ ${request.instance.title} ]]</div>
+    </div>
+    <div class="row justify-content-md-center pt-2">
+        <div class="col-2 psv-text-large psv-bold">Item barcode</div>
+        <div class="col-2 psv-text-large">[[ ${request.item.barcode} ]]</div>
+    </div>
+    <div class="row justify-content-md-center pt-2">
+        <div class="col-2 psv-text-large psv-bold">Item call number</div>
+        <div class="col-2 psv-text-large">[[ ${request.item.callNumber} ]]</div>
+    </div>
+    <div class="row justify-content-md-center pt-2">
+        <div class="col-2 psv-text-large psv-bold">Patron comments</div>
+        <div class="col-2 psv-text-large">[[ ${request.patronComments} ]]</div>
+    </div>
+    <div class="row justify-content-md-center pt-2">
+        <div class="col-2 psv-text-large psv-bold">Cancellation additional information</div>
+        <div class="col-2 psv-text-large">[[ ${request.cancellationAdditionalInformation} ]]</div>
+    </div>
+
+    <form th:action="@{/request/{requestId}/edit(requestId=${request.id})}" th:object="${requestNoteDto}" method="post">
+        <div class="row justify-content-md-center pt-lg-5">
+        <div class="col-4">
+            <label for="cancellationAdditionalInformation" class="form-label psv-text-large">Non-fulfilment note (Folio additionalInformation):</label>
+            <textarea class="form-control psv-text-large" th:field="*{cancellationAdditionalInformation}" aria-describedby="additionalInformationHelp" cols="40" rows="5"></textarea>
+            <div id="additionalInformationHelp" class="form-text psv-text-large">Enter text that will appear in the Folio fulfilment notification</div>
+            <input type="hidden" th:value="${requestId}" name="requestId"/>
+        </div>
+            <div class="row justify-content-md-center pt-lg-5">
+            <div class="col-1">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+        </div>
+    </form>
+</main>
+</body>
+</html>
