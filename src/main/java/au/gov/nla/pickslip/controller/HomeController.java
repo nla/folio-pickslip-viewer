@@ -8,13 +8,10 @@ import au.gov.nla.pickslip.service.FolioService;
 import au.gov.nla.pickslip.service.PdfResponderService;
 import au.gov.nla.pickslip.service.RequestEditService;
 import au.gov.nla.pickslip.service.ScheduledRequestRetrieverService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,10 +21,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -144,7 +140,8 @@ public class HomeController {
   public String stack(
       @PathVariable(value = "stack") String stackCode,
       @RequestParam(required = false) String[] showOnly,
-      Model model) {
+      Model model,
+      final Principal principal) {
 
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
@@ -153,16 +150,24 @@ public class HomeController {
     model.addAttribute("queue", pickslipQueues.getPickslipsForStack(stackCode));
     model.addAttribute("visitors", pickslipQueues.getVisitorsForStack(stackCode));
 
+    if (principal != null) {
+      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken)principal).getPrincipal().getAttribute("preferred_username"));
+    }
+
     return "stack";
   }
 
   @GetMapping({"", "/", "/home"})
-  public String index(@RequestParam(required = false) String[] showOnly, Model model) {
+  public String index(@RequestParam(required = false) String[] showOnly, Model model, final Principal principal) {
 
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
     model.addAttribute("stacks", filterStackLocations(showOnly));
     model.addAttribute("queues", pickslipQueues);
+
+    if (principal != null) {
+      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken)principal).getPrincipal().getAttribute("preferred_username"));
+    }
 
     return "index";
   }
@@ -185,8 +190,11 @@ public class HomeController {
   }
 
   @GetMapping("/request/{requestId}/edit")
-  public String editRequest(@PathVariable final String requestId, final Model model) {
-    // TODO: check Folio permissions
+  public String editRequest(@PathVariable final String requestId, final Model model, final Principal principal) {
+    if (folioEditNotAllowed(principal)) {
+      return "redirect:/";
+    }
+
     boolean requestFailed = false;
 
     try {
@@ -209,12 +217,16 @@ public class HomeController {
       }
     }
 
-    return "edit-request.html";
+    return "edit-request";
   }
 
   @PostMapping("/request/{requestId}/edit")
-  public String editRequest(@PathVariable final String requestId, @ModelAttribute final RequestNoteDto requestNoteDto, final Model model) throws IOException {
-    // TODO: check Folio permissions
+  public String editRequest(@PathVariable final String requestId, @ModelAttribute final RequestNoteDto requestNoteDto, Principal principal) throws IOException {
+
+    if (folioEditNotAllowed(principal)) {
+      return "redirect:/";
+    }
+
     log.debug("id: {}, note: {}", requestNoteDto.getRequestId(), requestNoteDto.getCancellationAdditionalInformation());
 
     if (requestNoteDto.getRequestId() != null && !requestNoteDto.getRequestId().trim().isEmpty() && requestNoteDto.getCancellationAdditionalInformation() != null && !requestNoteDto.getCancellationAdditionalInformation().trim().isEmpty()) {
@@ -222,5 +234,15 @@ public class HomeController {
     }
 
     return "redirect:/request/" + requestId + "/edit" ;
+  }
+
+  private boolean folioEditNotAllowed(final Principal principal) {
+    try {
+      return (principal == null || !requestEditService.userCanEditRequest(((OAuth2AuthenticationToken) principal).getPrincipal()
+          .getAttribute("preferred_username")));
+    } catch (IOException e) {
+      log.error("Exception attempting to check user Folio access", e);
+      return false;
+    }
   }
 }
