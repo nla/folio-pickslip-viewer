@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>au.gov.nla</groupId>
 			<artifactId>folio-api</artifactId>
-			<version>1.0.21-SNAPSHOT</version>
+			<version>1.0.21-RELEASE</version>
 		</dependency>
 
 		<dependency>
