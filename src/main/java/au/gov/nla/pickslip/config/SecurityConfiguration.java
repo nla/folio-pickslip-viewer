@@ -22,9 +22,6 @@ import java.util.Arrays;
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-  private static final String GROUPS = "groups";
-  private static final String REALM_ACCESS_CLAIM = "realm_access";
-  private static final String ROLES_CLAIM = "roles";
   static String[] ANONYMOUS_PATHS = {"/export/**", "/bulkprint/**", "/location/**", "/", "/home", "/user/**", "/webjars/**","/css/**"};
 
   private final KeycloakLogoutHandler keycloakLogoutHandler;
@@ -39,7 +36,6 @@ public class SecurityConfiguration {
                         .map(AntPathRequestMatcher::antMatcher)
                         .toArray(AntPathRequestMatcher[]::new))
                     .permitAll().anyRequest().authenticated())
-      .csrf(AbstractHttpConfigurer::disable)
         .oauth2Login(Customizer.withDefaults())
         .logout(logout -> logout.addLogoutHandler(keycloakLogoutHandler).logoutSuccessUrl("/"));
     return http.build();
