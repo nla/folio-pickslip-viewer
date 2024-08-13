@@ -1,41 +1,55 @@
 package au.gov.nla.pickslip.controller;
 
 import au.gov.nla.pickslip.StackLocations;
+import au.gov.nla.pickslip.domain.FolioRequest;
 import au.gov.nla.pickslip.domain.PickslipQueues;
+import au.gov.nla.pickslip.dto.RequestNoteDto;
 import au.gov.nla.pickslip.service.FolioService;
 import au.gov.nla.pickslip.service.PdfResponderService;
+import au.gov.nla.pickslip.service.RequestEditService;
 import au.gov.nla.pickslip.service.ScheduledRequestRetrieverService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@Slf4j
 public class HomeController {
 
-  @Autowired PickslipQueues pickslipQueues;
+  @Autowired
+  PickslipQueues pickslipQueues;
 
-  @Autowired FolioService folioService;
+  @Autowired
+  FolioService folioService;
 
-  @Autowired PdfResponderService pdfResponderService;
+  @Autowired
+  PdfResponderService pdfResponderService;
 
-  @Autowired ScheduledRequestRetrieverService scheduledRequestRetrieverService;
+  @Autowired
+  ScheduledRequestRetrieverService scheduledRequestRetrieverService;
 
-  @Autowired StackLocations stackLocations;
+  @Autowired
+  StackLocations stackLocations;
 
-  private Logger log = LoggerFactory.getLogger(this.getClass());
+  @Autowired
+  RequestEditService requestEditService;
 
   @GetMapping("/export/{id}")
   public void export(@PathVariable String id, HttpServletResponse response) throws IOException {
@@ -109,19 +123,28 @@ public class HomeController {
         stackPickslips.stream()
             .filter(
                 p ->
-                    (p.request().requestDate().isAfter(uptoPickslip.request().requestDate()))
-                        || p.request().requestDate().isEqual(uptoPickslip.request().requestDate()))
+                    (p.request()
+                        .requestDate()
+                        .isAfter(uptoPickslip.request()
+                            .requestDate()))
+                        || p.request()
+                        .requestDate()
+                        .isEqual(uptoPickslip.request()
+                            .requestDate()))
             .filter(
                 p ->
                     p.visiting() == visitors
                         && !p.parked()
                         && PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED
-                            .getCode()
-                            .equalsIgnoreCase(p.request().status()))
+                        .getCode()
+                        .equalsIgnoreCase(p.request()
+                            .status()))
             .sorted(
                 (Comparator.comparingDouble(
-                        (PickslipQueues.Pickslip p) -> getDeweyish(p.item().callNumber()))
-                    .thenComparing(p -> p.item().callNumber())))
+                        (PickslipQueues.Pickslip p) -> getDeweyish(p.item()
+                            .callNumber()))
+                    .thenComparing(p -> p.item()
+                        .callNumber())))
             .toList();
 
     pdfResponderService.generate(sos, sorted);
@@ -132,7 +155,8 @@ public class HomeController {
   public String stack(
       @PathVariable(value = "stack") String stackCode,
       @RequestParam(required = false) String[] showOnly,
-      Model model) {
+      Model model,
+      final Principal principal) {
 
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
@@ -141,16 +165,27 @@ public class HomeController {
     model.addAttribute("queue", pickslipQueues.getPickslipsForStack(stackCode));
     model.addAttribute("visitors", pickslipQueues.getVisitorsForStack(stackCode));
 
+    if (principal != null) {
+      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken) principal).getPrincipal()
+          .getAttribute("preferred_username"));
+    }
+
     return "stack";
   }
 
   @GetMapping({"", "/", "/home"})
-  public String index(@RequestParam(required = false) String[] showOnly, Model model) {
+  public String index(@RequestParam(required = false) String[] showOnly, Model model,
+                      final Principal principal) {
 
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
     model.addAttribute("stacks", filterStackLocations(showOnly));
     model.addAttribute("queues", pickslipQueues);
+
+    if (principal != null) {
+      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken) principal).getPrincipal()
+          .getAttribute("preferred_username"));
+    }
 
     return "index";
   }
@@ -170,5 +205,70 @@ public class HomeController {
       }
     }
     return (stackList != null && stackList.size() > 0) ? stackList : stackLocations.getStacks();
+  }
+
+  @GetMapping("/request/{requestId}/edit")
+  public String editRequest(@PathVariable final String requestId, final Model model,
+                            final Principal principal) {
+    if (folioEditNotAllowed(principal)) {
+      return "redirect:/";
+    }
+
+    boolean requestFailed = false;
+
+    try {
+      UUID.fromString(requestId);
+    } catch (IllegalArgumentException e) {
+      model.addAttribute("errorMessage", "Invalid request id");
+      requestFailed = true;
+    }
+
+    if (!requestFailed) {
+      model.addAttribute("requestId", requestId);
+      try {
+        FolioRequest folioRequest = requestEditService.getRequestById(requestId);
+        model.addAttribute("request", folioRequest);
+        model.addAttribute("requestNoteDto", new RequestNoteDto());
+      } catch (IOException e) {
+        model.addAttribute("errorMessage", "Error retrieving request from Folio");
+      } catch (Exception e) {
+        log.error("error", e);
+      }
+    }
+
+    return "edit-request";
+  }
+
+  @PostMapping("/request/{requestId}/edit")
+  public String editRequest(@PathVariable final String requestId,
+                            @ModelAttribute final RequestNoteDto requestNoteDto,
+                            Principal principal) throws IOException {
+
+    if (folioEditNotAllowed(principal)) {
+      return "redirect:/";
+    }
+
+    log.debug("id: {}, note: {}", requestNoteDto.getRequestId(),
+        requestNoteDto.getCancellationAdditionalInformation());
+
+    if (requestNoteDto.getRequestId() != null && !requestNoteDto.getRequestId()
+        .trim()
+        .isEmpty() && requestNoteDto.getCancellationAdditionalInformation() != null && !requestNoteDto.getCancellationAdditionalInformation()
+        .trim()
+        .isEmpty()) {
+      folioService.updateRequest(requestNoteDto);
+    }
+
+    return "redirect:/request/" + requestId + "/edit";
+  }
+
+  private boolean folioEditNotAllowed(final Principal principal) {
+    try {
+      return (principal == null || !requestEditService.userCanEditRequest(((OAuth2AuthenticationToken) principal).getPrincipal()
+          .getAttribute("preferred_username")));
+    } catch (IOException e) {
+      log.error("Exception attempting to check user Folio access", e);
+      return false;
+    }
   }
 }

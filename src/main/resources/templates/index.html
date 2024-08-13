@@ -28,6 +28,7 @@
                         <th scope="col">Patron</th>
                         <th scope="col">Barcode</th>
                         <th scope="col">Print/Multi</th>
+                        <th scope="col">Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -96,8 +97,12 @@
                                            title="Print"
                                            class="action bi-arrow-bar-up"></a>
                                     </td>
+                                    <td>
+                                        <a th:href="@{/request/{requestId}/edit(requestId=${s.request.id})}"
+                                           title="Edit additional info"
+                                           class="action bi-pencil" target="_blank"></a>
+                                    </td>
                                 </tr>
-
                             </th:block>
                         </th:block>
                     </tbody>
@@ -107,7 +112,5 @@
         </div>
     </div>
 </main>
-
-
 </body>
 </html>

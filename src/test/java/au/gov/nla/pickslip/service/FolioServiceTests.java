@@ -149,6 +149,7 @@ public class FolioServiceTests {
                         "f4e192ba-a995-5f2c-8d7d-c13ec36d258f",
                         "5e73e86d-e493-5465-9bbe-a8d62025f475",
                         "Open - Not yet filled",
+                        null,
                         "1",
                         new FolioRequest.Instance("Land without justice : an autobiography of his youth / Milovan Djilas ; with an introduction and notes by William Jovanovich."),
                         new FolioRequest.Item("990001588920", "655 MAN", new FolioRequest.Item.Location("MITCHELL WAREHOUSE [Mitchell]", "MITCHELL")),

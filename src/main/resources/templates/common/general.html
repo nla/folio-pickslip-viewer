@@ -82,8 +82,12 @@
 <body>
 
 <div th:fragment="admintitle (name)" id="title">
-    <div class="bg-light header">
-        <h2 class="mb-3 font-weight-light" th:utext="${name}"/>
+    <div class="bg-light header  pb-5">
+        <div class="h2 mb-3 font-weight-light" th:utext="${name}" style="float:left">
+        </div>
+        <div class="h3" th:if="${loggedInUser}" style="float: right">
+            <p><a href="/requests/logout">Logout</a> ([[${loggedInUser} ]])</p>
+        </div>
     </div>
 </div>
 
