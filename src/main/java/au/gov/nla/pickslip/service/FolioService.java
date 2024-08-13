@@ -1,29 +1,43 @@
 package au.gov.nla.pickslip.service;
 
-import au.gov.nla.folio.api.*;
+import au.gov.nla.folio.api.FOLIOLocationsRetrieverAPI;
+import au.gov.nla.folio.api.FOLIOPatronPermissionsAPI;
+import au.gov.nla.folio.api.FOLIOPatronRetrieverAPI;
+import au.gov.nla.folio.api.FOLIOPickslipsRetrieverAPI;
+import au.gov.nla.folio.api.FOLIORequestsRetrieverAPI;
+import au.gov.nla.folio.api.FOLIOServicePointRetrieverAPI;
 import au.gov.nla.folio.api.credentials.FOLIOAPICredentials;
 import au.gov.nla.folio.util.FOLIOAPIUtils;
-import au.gov.nla.pickslip.domain.*;
+import au.gov.nla.pickslip.domain.FolioInstance;
+import au.gov.nla.pickslip.domain.FolioLocation;
+import au.gov.nla.pickslip.domain.FolioPickslip;
+import au.gov.nla.pickslip.domain.FolioRequest;
+import au.gov.nla.pickslip.domain.FolioServicePoint;
+import au.gov.nla.pickslip.domain.PickslipQueues;
 import au.gov.nla.pickslip.dto.RequestNoteDto;
 import au.gov.nla.pickslip.service.async.FolioAsyncService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.PostConstruct;
-import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class FolioService {
@@ -38,7 +52,8 @@ public class FolioService {
   private Map<String, String> folioOkapiCredentialsMap;
 
   // delegate all async
-  @Autowired FolioAsyncService folioAsyncService;
+  @Autowired
+  FolioAsyncService folioAsyncService;
 
   private FOLIOAPICredentials folioOkapiCredentials;
 
@@ -79,10 +94,14 @@ public class FolioService {
             r -> {
               FolioServicePoint sp =
                   new FolioServicePoint(
-                      r.at("/id").asText(null),
-                      r.at("/code").asText(null),
-                      r.at("/name").asText(null),
-                      r.at("/discoveryDisplayName").asText(null));
+                      r.at("/id")
+                          .asText(null),
+                      r.at("/code")
+                          .asText(null),
+                      r.at("/name")
+                          .asText(null),
+                      r.at("/discoveryDisplayName")
+                          .asText(null));
 
               result.add(sp);
             });
@@ -106,10 +125,14 @@ public class FolioService {
             r -> {
               FolioLocation loc =
                   new FolioLocation(
-                      r.at("/id").asText(null),
-                      r.at("/code").asText(null),
-                      r.at("/name").asText(null),
-                      r.at("/primaryServicePoint").asText(null));
+                      r.at("/id")
+                          .asText(null),
+                      r.at("/code")
+                          .asText(null),
+                      r.at("/name")
+                          .asText(null),
+                      r.at("/primaryServicePoint")
+                          .asText(null));
               result.add(loc);
             });
 
@@ -148,23 +171,38 @@ public class FolioService {
             r -> {
               FolioPickslip pick =
                   new FolioPickslip(
-                      r.at("/requestId").asText(),
+                      r.at("/requestId")
+                          .asText(),
                       new FolioPickslip.Item(
-                          r.at("/item/title").asText(null),
-                          r.at("/item/primaryContributor").asText(null),
-                          r.at("/item/allContributors").asText(null),
-                          r.at("/item/barcode").asText(null),
-                          r.at("/item/descriptionOfPieces").asText(null),
-                          r.at("/item/callNumber").asText(null),
-                          r.at("/item/chronology").asText(null),
-                          r.at("/item/enumeration").asText(null),
-                          r.at("/item/effectiveLocationSpecific").asText(null),
-                          r.at("/item/yearCaption").asText(null),
-                          r.at("/item/copy").asText(null)),
+                          r.at("/item/title")
+                              .asText(null),
+                          r.at("/item/primaryContributor")
+                              .asText(null),
+                          r.at("/item/allContributors")
+                              .asText(null),
+                          r.at("/item/barcode")
+                              .asText(null),
+                          r.at("/item/descriptionOfPieces")
+                              .asText(null),
+                          r.at("/item/callNumber")
+                              .asText(null),
+                          r.at("/item/chronology")
+                              .asText(null),
+                          r.at("/item/enumeration")
+                              .asText(null),
+                          r.at("/item/effectiveLocationSpecific")
+                              .asText(null),
+                          r.at("/item/yearCaption")
+                              .asText(null),
+                          r.at("/item/copy")
+                              .asText(null)),
                       new FolioPickslip.Requester(
-                          r.at("/requester/firstName").asText(null),
-                          r.at("/requester/lastName").asText(null),
-                          r.at("/requester/barcode").asText(null)));
+                          r.at("/requester/firstName")
+                              .asText(null),
+                          r.at("/requester/lastName")
+                              .asText(null),
+                          r.at("/requester/barcode")
+                              .asText(null)));
 
               result.add(pick);
             });
@@ -194,33 +232,49 @@ public class FolioService {
                     requestDateNode.isNull()
                         ? null
                         : ZonedDateTime.parse(
-                            requestDateNode.asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                        requestDateNode.asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
                 ZonedDateTime localRequestDate =
                     requestDate.withZoneSameInstant(ZoneId.systemDefault());
 
                 FolioRequest req =
                     new FolioRequest(
-                        r.at("/id").asText(null),
+                        r.at("/id")
+                            .asText(null),
                         localRequestDate,
-                        r.at("/patronComments").asText(null),
-                        r.at("/itemId").asText(null),
-                        r.at("/instanceId").asText(null),
-                        r.at("/requesterId").asText(null),
-                        r.at("/status").asText(null),
-                        r.at("/cancellationAdditionalInformation").asText(null),
-                        r.at("/position").asText(null),
-                        new FolioRequest.Instance(r.at("/instance/title").asText(null)),
+                        r.at("/patronComments")
+                            .asText(null),
+                        r.at("/itemId")
+                            .asText(null),
+                        r.at("/instanceId")
+                            .asText(null),
+                        r.at("/requesterId")
+                            .asText(null),
+                        r.at("/status")
+                            .asText(null),
+                        r.at("/cancellationAdditionalInformation")
+                            .asText(null),
+                        r.at("/position")
+                            .asText(null),
+                        new FolioRequest.Instance(r.at("/instance/title")
+                            .asText(null)),
                         new FolioRequest.Item(
-                            r.at("/item/barcode").asText(null),
-                            r.at("/item/callNumber").asText(null),
+                            r.at("/item/barcode")
+                                .asText(null),
+                            r.at("/item/callNumber")
+                                .asText(null),
                             new FolioRequest.Item.Location(
-                                r.at("/item/location/name").asText(null),
-                                r.at("/item/location/code").asText(null))),
+                                r.at("/item/location/name")
+                                    .asText(null),
+                                r.at("/item/location/code")
+                                    .asText(null))),
                         new FolioRequest.Requester(
-                            r.at("/requester/barcode").asText(null),
-                            r.at("/requester/patronGroupGroup").asText(null)),
-                        toList(r.at("/tagList").elements()));
+                            r.at("/requester/barcode")
+                                .asText(null),
+                            r.at("/requester/patronGroupGroup")
+                                .asText(null)),
+                        toList(r.at("/tagList")
+                            .elements()));
 
                 result.add(req);
               });
@@ -283,7 +337,8 @@ public class FolioService {
                 .asText(null),
             folioRequestJson.at("/status")
                 .asText(null),
-            folioRequestJson.at("/cancellationAdditionalInformation").asText(null),
+            folioRequestJson.at("/cancellationAdditionalInformation")
+                .asText(null),
             folioRequestJson.at("/position")
                 .asText(null),
             new FolioRequest.Instance(folioRequestJson.at("/instance/title")
@@ -313,9 +368,11 @@ public class FolioService {
     JsonNode folioRequestJson =
         folioRequestsRetrieverAPI.getRequestById(requestNoteDto.getRequestId());
     if (folioRequestJson != null) {
-      ((ObjectNode) folioRequestJson).put("cancellationAdditionalInformation", requestNoteDto.getCancellationAdditionalInformation());
+      ((ObjectNode) folioRequestJson).put("cancellationAdditionalInformation",
+          requestNoteDto.getCancellationAdditionalInformation());
       folioRequestsRetrieverAPI.updateRequest(requestNoteDto.getRequestId(), folioRequestJson);
-    } else {
+    }
+    else {
       log.error("Could not retrieve request with id: {}", requestNoteDto.getRequestId());
     }
   }
@@ -328,20 +385,23 @@ public class FolioService {
       return permissions;
     }
 
-    FOLIOPatronRetrieverAPI folioPatronRetrieverAPI = new FOLIOPatronRetrieverAPI(folioOkapiCredentials);
+    FOLIOPatronRetrieverAPI folioPatronRetrieverAPI =
+        new FOLIOPatronRetrieverAPI(folioOkapiCredentials);
     JsonNode userJsonNode = folioPatronRetrieverAPI.getUserByUsername(username.trim());
     if (userJsonNode == null) {
       log.error("Folio record for user with name: {} not found", username);
       return permissions;
     }
 
-    String userId = userJsonNode.at("/id").asText("");
+    String userId = userJsonNode.at("/id")
+        .asText("");
     if (userId.isEmpty()) {
       log.error("Folio record for user with name: {} has no id", username);
       return permissions;
     }
 
-    FOLIOPatronPermissionsAPI folioPatronPermissionsAPI = new FOLIOPatronPermissionsAPI(folioOkapiCredentials);
+    FOLIOPatronPermissionsAPI folioPatronPermissionsAPI =
+        new FOLIOPatronPermissionsAPI(folioOkapiCredentials);
     JsonNode permissionsJsonNode = folioPatronPermissionsAPI.getPermissionsForUserId(userId);
     if (permissionsJsonNode == null) {
       log.error("Unable to retrieve Folio permissions for user id: {}", userId);

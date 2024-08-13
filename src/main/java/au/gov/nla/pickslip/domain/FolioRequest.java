@@ -2,7 +2,6 @@ package au.gov.nla.pickslip.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -34,21 +33,20 @@ public record FolioRequest(
 
   @JsonInclude(value = JsonInclude.Include.NON_NULL)
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public record Requester(String barcode, String patronGroupGroup) {}
-  ;
+  public record Requester(String barcode, String patronGroupGroup) {
+  }
 
   @JsonInclude(value = JsonInclude.Include.NON_NULL)
   @JsonIgnoreProperties(ignoreUnknown = true)
   public record Item(String barcode, String callNumber, Location location) {
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record Location(String name, String code) {}
-    ;
+    public record Location(String name, String code) {
+    }
   }
-
 
   @JsonInclude(value = JsonInclude.Include.NON_NULL)
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public record Instance(String title) {}
-  ;
+  public record Instance(String title) {
+  }
 }

@@ -10,6 +10,7 @@ import au.gov.nla.pickslip.service.RequestEditService;
 import au.gov.nla.pickslip.service.ScheduledRequestRetrieverService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -32,15 +33,20 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class HomeController {
 
-  @Autowired PickslipQueues pickslipQueues;
+  @Autowired
+  PickslipQueues pickslipQueues;
 
-  @Autowired FolioService folioService;
+  @Autowired
+  FolioService folioService;
 
-  @Autowired PdfResponderService pdfResponderService;
+  @Autowired
+  PdfResponderService pdfResponderService;
 
-  @Autowired ScheduledRequestRetrieverService scheduledRequestRetrieverService;
+  @Autowired
+  ScheduledRequestRetrieverService scheduledRequestRetrieverService;
 
-  @Autowired StackLocations stackLocations;
+  @Autowired
+  StackLocations stackLocations;
 
   @Autowired
   RequestEditService requestEditService;
@@ -117,19 +123,28 @@ public class HomeController {
         stackPickslips.stream()
             .filter(
                 p ->
-                    (p.request().requestDate().isAfter(uptoPickslip.request().requestDate()))
-                        || p.request().requestDate().isEqual(uptoPickslip.request().requestDate()))
+                    (p.request()
+                        .requestDate()
+                        .isAfter(uptoPickslip.request()
+                            .requestDate()))
+                        || p.request()
+                        .requestDate()
+                        .isEqual(uptoPickslip.request()
+                            .requestDate()))
             .filter(
                 p ->
                     p.visiting() == visitors
                         && !p.parked()
                         && PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED
-                            .getCode()
-                            .equalsIgnoreCase(p.request().status()))
+                        .getCode()
+                        .equalsIgnoreCase(p.request()
+                            .status()))
             .sorted(
                 (Comparator.comparingDouble(
-                        (PickslipQueues.Pickslip p) -> getDeweyish(p.item().callNumber()))
-                    .thenComparing(p -> p.item().callNumber())))
+                        (PickslipQueues.Pickslip p) -> getDeweyish(p.item()
+                            .callNumber()))
+                    .thenComparing(p -> p.item()
+                        .callNumber())))
             .toList();
 
     pdfResponderService.generate(sos, sorted);
@@ -151,14 +166,16 @@ public class HomeController {
     model.addAttribute("visitors", pickslipQueues.getVisitorsForStack(stackCode));
 
     if (principal != null) {
-      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken)principal).getPrincipal().getAttribute("preferred_username"));
+      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken) principal).getPrincipal()
+          .getAttribute("preferred_username"));
     }
 
     return "stack";
   }
 
   @GetMapping({"", "/", "/home"})
-  public String index(@RequestParam(required = false) String[] showOnly, Model model, final Principal principal) {
+  public String index(@RequestParam(required = false) String[] showOnly, Model model,
+                      final Principal principal) {
 
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
@@ -166,7 +183,8 @@ public class HomeController {
     model.addAttribute("queues", pickslipQueues);
 
     if (principal != null) {
-      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken)principal).getPrincipal().getAttribute("preferred_username"));
+      model.addAttribute("loggedInUser", ((OAuth2AuthenticationToken) principal).getPrincipal()
+          .getAttribute("preferred_username"));
     }
 
     return "index";
@@ -190,7 +208,8 @@ public class HomeController {
   }
 
   @GetMapping("/request/{requestId}/edit")
-  public String editRequest(@PathVariable final String requestId, final Model model, final Principal principal) {
+  public String editRequest(@PathVariable final String requestId, final Model model,
+                            final Principal principal) {
     if (folioEditNotAllowed(principal)) {
       return "redirect:/";
     }
@@ -221,19 +240,26 @@ public class HomeController {
   }
 
   @PostMapping("/request/{requestId}/edit")
-  public String editRequest(@PathVariable final String requestId, @ModelAttribute final RequestNoteDto requestNoteDto, Principal principal) throws IOException {
+  public String editRequest(@PathVariable final String requestId,
+                            @ModelAttribute final RequestNoteDto requestNoteDto,
+                            Principal principal) throws IOException {
 
     if (folioEditNotAllowed(principal)) {
       return "redirect:/";
     }
 
-    log.debug("id: {}, note: {}", requestNoteDto.getRequestId(), requestNoteDto.getCancellationAdditionalInformation());
+    log.debug("id: {}, note: {}", requestNoteDto.getRequestId(),
+        requestNoteDto.getCancellationAdditionalInformation());
 
-    if (requestNoteDto.getRequestId() != null && !requestNoteDto.getRequestId().trim().isEmpty() && requestNoteDto.getCancellationAdditionalInformation() != null && !requestNoteDto.getCancellationAdditionalInformation().trim().isEmpty()) {
+    if (requestNoteDto.getRequestId() != null && !requestNoteDto.getRequestId()
+        .trim()
+        .isEmpty() && requestNoteDto.getCancellationAdditionalInformation() != null && !requestNoteDto.getCancellationAdditionalInformation()
+        .trim()
+        .isEmpty()) {
       folioService.updateRequest(requestNoteDto);
     }
 
-    return "redirect:/request/" + requestId + "/edit" ;
+    return "redirect:/request/" + requestId + "/edit";
   }
 
   private boolean folioEditNotAllowed(final Principal principal) {

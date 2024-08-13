@@ -21,7 +21,8 @@ import java.util.Arrays;
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-  static String[] ANONYMOUS_PATHS = {"/export/**", "/bulkprint/**", "/location/**", "/", "/home", "/user/**", "/webjars/**","/css/**"};
+  static String[] ANONYMOUS_PATHS = {"/export/**", "/bulkprint/**", "/location/**", "/", "/home",
+      "/user/**", "/webjars/**", "/css/**"};
 
   private final KeycloakLogoutHandler keycloakLogoutHandler;
 
@@ -34,9 +35,12 @@ public class SecurityConfiguration {
                     .requestMatchers(Arrays.stream(ANONYMOUS_PATHS)
                         .map(AntPathRequestMatcher::antMatcher)
                         .toArray(AntPathRequestMatcher[]::new))
-                    .permitAll().anyRequest().authenticated())
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .oauth2Login(Customizer.withDefaults())
-        .logout(logout -> logout.addLogoutHandler(keycloakLogoutHandler).logoutSuccessUrl("/"));
+        .logout(logout -> logout.addLogoutHandler(keycloakLogoutHandler)
+            .logoutSuccessUrl("/"));
     return http.build();
   }
 }
