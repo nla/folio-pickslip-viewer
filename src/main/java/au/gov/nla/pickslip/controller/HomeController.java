@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,15 +53,19 @@ public class HomeController {
   @Autowired
   RequestEditService requestEditService;
 
+  private static final DateTimeFormatter CS_DOWNLOAD_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
   @GetMapping("/export/{id}")
   public void export(@PathVariable String id, HttpServletResponse response) throws IOException {
 
     ServletOutputStream sos = response.getOutputStream();
-    response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=print.pdf");
 
     PickslipQueues.Pickslip pickslip = pickslipQueues.getPickslipByRequestId(id);
+    String filename = "cs-" + pickslip.item().barcode() + "-" + CS_DOWNLOAD_DATE_FORMATTER.format(
+        LocalDateTime.now()) + ".pdf";
+    response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
 
-    pdfResponderService.generate(sos, Collections.singletonList(pickslip));
+    pdfResponderService.generate(sos, Collections.singletonList(pickslip), filename);
     response.flushBuffer();
   }
 
@@ -104,8 +110,10 @@ public class HomeController {
       HttpServletResponse response)
       throws IOException {
 
+    String filename = "csbulk-" + CS_DOWNLOAD_DATE_FORMATTER.format(LocalDateTime.now()) + ".pdf";
+
     ServletOutputStream sos = response.getOutputStream();
-    response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=print.pdf");
+    response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
 
     var uptoPickslip = this.pickslipQueues.getPickslipByRequestId(upToId);
     var stackPickslips =
@@ -147,7 +155,7 @@ public class HomeController {
                         .callNumber())))
             .toList();
 
-    pdfResponderService.generate(sos, sorted);
+    pdfResponderService.generate(sos, sorted, filename);
     response.flushBuffer();
   }
 
@@ -204,7 +212,7 @@ public class HomeController {
         }
       }
     }
-    return (stackList != null && stackList.size() > 0) ? stackList : stackLocations.getStacks();
+    return (stackList != null && !stackList.isEmpty()) ? stackList : stackLocations.getStacks();
   }
 
   @GetMapping("/request/{requestId}/edit")

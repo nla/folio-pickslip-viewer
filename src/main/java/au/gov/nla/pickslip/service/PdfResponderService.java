@@ -33,7 +33,7 @@ public class PdfResponderService {
 
   @Autowired UnicodeFontMap unicodeFontMap;
 
-  private Logger log = LoggerFactory.getLogger(this.getClass());
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   private ITextRenderer renderer;
 
@@ -68,7 +68,7 @@ public class PdfResponderService {
 
     Code128Writer barcodeWriter = new Code128Writer();
 
-    Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+    Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
     hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
     hints.put(EncodeHintType.MARGIN, 4);
 
@@ -80,7 +80,7 @@ public class PdfResponderService {
     return Base64.getEncoder().encodeToString(bos.toByteArray());
   }
 
-  public synchronized void generate(OutputStream os, List<PickslipQueues.Pickslip> pickslipList) {
+  public synchronized void generate(OutputStream os, List<PickslipQueues.Pickslip> pickslipList, String filename) {
 
     Context ctx = new Context(LocaleContextHolder.getLocale());
 
@@ -114,6 +114,7 @@ public class PdfResponderService {
 
         ctx.setVariable("instance", instances.get(pickslip.instance().id()));
         ctx.setVariable("pickslip", pickslip);
+        ctx.setVariable("printFilename", filename);
         ctx.setVariable("unicodeFontMap", unicodeFontMap);
 
         String htmlContent = this.templateEngine.process("pdf/print_pdf", ctx);
