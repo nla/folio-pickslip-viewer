@@ -106,7 +106,8 @@
                 <div class="access-info">
                     <table>
                         <tr> <td class="label-left">Access conditions:</td> <td class="heavy-font" th:text="${#strings.abbreviate(instance.accessConditions,100)} ?: '-'"/> </tr>
-                        <tr> <td class="label-left">Terms of use:</td>      <td class="heavy-font" th:text="${#strings.abbreviate(instance.termsOfUse,100)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Terms of use:</td>      <td class="heavy-font" th:text="${#strings.abbreviate(instance.termsOfUse,40)} ?: '-'"/> </tr>
+                        <tr> <td class="label-left">Ref:</td>      <td class="heavy-font" th:text="${#strings.abbreviate(printFilename,100)} ?: '-'"/> </tr>
                     </table>
                 </div>
             </div>

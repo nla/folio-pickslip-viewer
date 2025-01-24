@@ -1,6 +1,6 @@
 nlaBuild steps: this,
     applicationName: "folio-pickslip-viewer",
-    jdk: 'JDK 17',
+    jdk: 'JDK 21',
     deployToDev: false,
     devHostname: "spade",
     deployToNexus: true,
