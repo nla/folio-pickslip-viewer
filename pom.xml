@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>au.gov.nla</groupId>
 	<artifactId>folio-pickslip-viewer</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1</version>
 	<name>folio-pickslip-viewer</name>
 	<description>FOLIO pickslip / request queue viewer</description>
 	<properties>
