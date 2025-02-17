@@ -8,6 +8,7 @@ import au.gov.nla.folio.api.FOLIORequestsRetrieverAPI;
 import au.gov.nla.folio.api.FOLIOServicePointRetrieverAPI;
 import au.gov.nla.folio.api.credentials.FOLIOAPICredentials;
 import au.gov.nla.folio.util.FOLIOAPIUtils;
+import au.gov.nla.pickslip.config.FolioConfiguration;
 import au.gov.nla.pickslip.domain.FolioInstance;
 import au.gov.nla.pickslip.domain.FolioLocation;
 import au.gov.nla.pickslip.domain.FolioPickslip;
@@ -48,12 +49,12 @@ public class FolioService {
   @Value("${folio.pickslips.limit}")
   private int folioPickslipsLimit;
 
-  @Value("#{${folioConfigMap}}")
-  private Map<String, String> folioOkapiCredentialsMap;
-
   // delegate all async
   @Autowired
   FolioAsyncService folioAsyncService;
+
+  @Autowired
+  FolioConfiguration folioConfiguration;
 
   private FOLIOAPICredentials folioOkapiCredentials;
 
@@ -61,7 +62,9 @@ public class FolioService {
 
   @PostConstruct
   public void init() {
-    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(this.folioOkapiCredentialsMap);
+    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
+        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_OKAPI_URL",
+        folioConfiguration.getOkapiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
   }
 
   public Map<String, FolioInstance> getFolioInstances(List<String> instanceIds)

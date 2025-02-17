@@ -5,6 +5,7 @@ import au.gov.nla.folio.api.FOLIOInstanceNoteTypesAPI;
 import au.gov.nla.folio.api.FOLIOInventoryAPI;
 import au.gov.nla.folio.api.credentials.FOLIOAPICredentials;
 import au.gov.nla.folio.util.FOLIOAPIUtils;
+import au.gov.nla.pickslip.config.FolioConfiguration;
 import au.gov.nla.pickslip.domain.FolioInstance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,9 @@ public class FolioAsyncService {
   @Value("${folio.alt-title-type.variant-title}")
   private String folioVariantTitleAltTitleType;
 
+  @Autowired
+  FolioConfiguration folioConfiguration;
+
   String folioAccessConditionsUuid;
   String folioTermsOfUseNoteUuid;
   String folioSpineLabelNoteTypeUuid;
@@ -46,15 +51,14 @@ public class FolioAsyncService {
 
   private ObjectMapper mapper = new ObjectMapper();
 
-  @Value("#{${folioConfigMap}}")
-  private Map<String, String> folioOkapiCredentialsMap;
-
   private FOLIOAPICredentials folioOkapiCredentials;
 
   @PostConstruct
   public void init() throws IOException {
 
-    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(this.folioOkapiCredentialsMap);
+    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
+        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_OKAPI_URL",
+        folioConfiguration.getOkapiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
 
     FOLIOInstanceNoteTypesAPI folioInstanceNoteTypesAPI =
         new FOLIOInstanceNoteTypesAPI(folioOkapiCredentials);
