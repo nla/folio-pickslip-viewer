@@ -57,8 +57,8 @@ public class FolioAsyncService {
   public void init() throws IOException {
 
     folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
-        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_OKAPI_URL",
-        folioConfiguration.getOkapiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
+        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_API_URL",
+        folioConfiguration.getApiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
 
     FOLIOInstanceNoteTypesAPI folioInstanceNoteTypesAPI =
         new FOLIOInstanceNoteTypesAPI(folioOkapiCredentials);

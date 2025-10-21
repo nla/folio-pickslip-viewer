@@ -3,6 +3,7 @@ package au.gov.nla.pickslip.service;
 import au.gov.nla.folio.api.FOLIOLocationsRetrieverAPI;
 import au.gov.nla.folio.api.FOLIOPatronPermissionsAPI;
 import au.gov.nla.folio.api.FOLIOPatronRetrieverAPI;
+import au.gov.nla.folio.api.FOLIOPatronRolesAPI;
 import au.gov.nla.folio.api.FOLIOPickslipsRetrieverAPI;
 import au.gov.nla.folio.api.FOLIORequestsRetrieverAPI;
 import au.gov.nla.folio.api.FOLIOServicePointRetrieverAPI;
@@ -63,8 +64,8 @@ public class FolioService {
   @PostConstruct
   public void init() {
     folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
-        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_OKAPI_URL",
-        folioConfiguration.getOkapiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
+        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_API_URL",
+        folioConfiguration.getApiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
   }
 
   public Map<String, FolioInstance> getFolioInstances(List<String> instanceIds)
@@ -422,5 +423,53 @@ public class FolioService {
     }
 
     return permissions;
+  }
+
+  public List<String> getFolioRolesForUser(final String username) throws IOException {
+    List<String> roles = new ArrayList<>();
+
+    if (Strings.isBlank(username)) {
+      log.error("Username is empty");
+      return roles;
+    }
+
+    FOLIOPatronRetrieverAPI folioPatronRetrieverAPI =
+        new FOLIOPatronRetrieverAPI(folioOkapiCredentials);
+    JsonNode userJsonNode = folioPatronRetrieverAPI.getUserByUsername(username.trim());
+    if (userJsonNode == null) {
+      log.error("Folio record for user with name: {} not found", username);
+      return roles;
+    }
+
+    String userId = userJsonNode.at("/id")
+        .asText("");
+    if (userId.isEmpty()) {
+      log.error("Folio record for user with name: {} has no id", username);
+      return roles;
+    }
+
+    FOLIOPatronRolesAPI folioPatronRolesAPI =
+        new FOLIOPatronRolesAPI(folioOkapiCredentials);
+    JsonNode rolesJsonNode = folioPatronRolesAPI.getRolesForUserId(userId);
+    if (rolesJsonNode == null) {
+      log.error("Unable to retrieve Folio roles for user id: {}", userId);
+      return roles;
+    }
+
+    JsonNode rolesArray = rolesJsonNode.at("/userRoles");
+    if (rolesArray.isMissingNode() || !rolesArray.isArray()) {
+      log.error("Unable to find roles list in Folio response for user id: {}", userId);
+      return roles;
+    }
+
+    for (JsonNode jsonNode : rolesArray) {
+      JsonNode roleNode = jsonNode.at("/roleId");
+      if (!roleNode.isMissingNode()) {
+        log.info("Adding role id: {} for user id: {}", roleNode.asText(), userId);
+        roles.add(roleNode.asText());
+      }
+    }
+
+    return roles;
   }
 }

@@ -13,14 +13,14 @@ public class RequestEditService {
 
   private final FolioService folioService;
 
-  private static final String NLA_CIRC_RETRIEVALS_GENERAL_PERMISSIONS_UUID = "55254dc9-4e4d-445a-bd8d-48f869d4b780";
+  private static final String NLA_CIRC_RETRIEVALS_EDIT_REQUESTS_ROLE_UUID = "f985adab-ede9-4ebf-bcf3-5262f1ac6969";
 
   public FolioRequest getRequestById(final String requestId) throws IOException {
     return folioService.folioApiGetRequestById(requestId);
   }
 
   public boolean userCanEditRequest(final String username) throws IOException {
-    List<String> permissions = folioService.getFolioPermissionsForUser(username);
-    return permissions.stream().anyMatch(NLA_CIRC_RETRIEVALS_GENERAL_PERMISSIONS_UUID::equals);
+    List<String> roles = folioService.getFolioRolesForUser(username);
+    return roles.stream().anyMatch(NLA_CIRC_RETRIEVALS_EDIT_REQUESTS_ROLE_UUID::equals);
   }
 }
