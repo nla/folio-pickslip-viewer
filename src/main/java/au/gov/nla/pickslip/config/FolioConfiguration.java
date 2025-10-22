@@ -17,4 +17,5 @@ public class FolioConfiguration {
   private String tenant;
   private String username;
   private String password;
+  private String RequestEditRoleUuid;
 }
