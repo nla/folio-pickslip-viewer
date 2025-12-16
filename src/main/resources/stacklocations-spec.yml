@@ -41,7 +41,9 @@ stacklocations:
     -
       code: MITCHELL-SP
       label: Mitchell
-
+    -
+      code: OSMONHUNE
+      label: Hume Extension
 #  NMRR-SP
 #  PROC-SP
 #  PRES-SP
