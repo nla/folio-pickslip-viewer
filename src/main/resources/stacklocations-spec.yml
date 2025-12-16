@@ -42,7 +42,7 @@ stacklocations:
       code: MITCHELL-SP
       label: Mitchell
     -
-      code: HUME-EXT
+      code: HUME-EXT-SP
       label: Hume Extension
 #  NMRR-SP
 #  PROC-SP
