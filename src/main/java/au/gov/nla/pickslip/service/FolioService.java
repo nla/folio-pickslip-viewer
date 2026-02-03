@@ -381,49 +381,6 @@ public class FolioService {
     }
   }
 
-  public List<String> getFolioPermissionsForUser(final String username) throws IOException {
-    List<String> permissions = new ArrayList<>();
-
-    if (Strings.isBlank(username)) {
-      log.error("Username is empty");
-      return permissions;
-    }
-
-    FOLIOPatronRetrieverAPI folioPatronRetrieverAPI =
-        new FOLIOPatronRetrieverAPI(folioOkapiCredentials);
-    JsonNode userJsonNode = folioPatronRetrieverAPI.getUserByUsername(username.trim());
-    if (userJsonNode == null) {
-      log.error("Folio record for user with name: {} not found", username);
-      return permissions;
-    }
-
-    String userId = userJsonNode.at("/id")
-        .asText("");
-    if (userId.isEmpty()) {
-      log.error("Folio record for user with name: {} has no id", username);
-      return permissions;
-    }
-
-    FOLIOPatronPermissionsAPI folioPatronPermissionsAPI =
-        new FOLIOPatronPermissionsAPI(folioOkapiCredentials);
-    JsonNode permissionsJsonNode = folioPatronPermissionsAPI.getPermissionsForUserId(userId);
-    if (permissionsJsonNode == null) {
-      log.error("Unable to retrieve Folio permissions for user id: {}", userId);
-      return permissions;
-    }
-
-    JsonNode permissionsArray = permissionsJsonNode.at("/permissionNames");
-    if (permissionsArray.isMissingNode() || !permissionsArray.isArray()) {
-      log.error("Unable to find permissions list in Folio response for user id: {}", userId);
-      return permissions;
-    }
-
-    for (JsonNode jsonNode : permissionsArray) {
-      permissions.add(jsonNode.asText());
-    }
-
-    return permissions;
-  }
 
   public List<String> getFolioRolesForUser(final String username) throws IOException {
     List<String> roles = new ArrayList<>();
