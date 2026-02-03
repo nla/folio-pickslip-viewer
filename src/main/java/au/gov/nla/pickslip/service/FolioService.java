@@ -56,13 +56,13 @@ public class FolioService {
   @Autowired
   FolioConfiguration folioConfiguration;
 
-  private FOLIOAPICredentials folioOkapiCredentials;
+  private FOLIOAPICredentials folioApiCredentials;
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @PostConstruct
   public void init() {
-    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
+    folioApiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
         "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_API_URL",
         folioConfiguration.getApiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
   }
@@ -288,21 +288,21 @@ public class FolioService {
   // for spy / mock accessibility:
 
   protected JsonNode folioApiGetServicePoints() throws IOException {
-    return new FOLIOServicePointRetrieverAPI(folioOkapiCredentials).getServicePoints();
+    return new FOLIOServicePointRetrieverAPI(folioApiCredentials).getServicePoints();
   }
 
   protected JsonNode folioApiGetFolioLocations() throws IOException {
-    return new FOLIOLocationsRetrieverAPI(folioOkapiCredentials).getLocations();
+    return new FOLIOLocationsRetrieverAPI(folioApiCredentials).getLocations();
   }
 
   protected JsonNode folioApiGetPickslipsForServicePoint(String id, int folioPickslipsLimit)
       throws IOException {
-    return new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials)
+    return new FOLIOPickslipsRetrieverAPI(folioApiCredentials)
         .getPickslipsForServicePoint(id, folioPickslipsLimit);
   }
 
   protected JsonNode folioApiGetRequests() throws IOException {
-    return new FOLIORequestsRetrieverAPI(folioOkapiCredentials)
+    return new FOLIORequestsRetrieverAPI(folioApiCredentials)
         .getRequestsByStatus(
             List.of(
                 PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED.getCode(),
@@ -312,7 +312,7 @@ public class FolioService {
 
   public FolioRequest folioApiGetRequestById(final String requestId) throws IOException {
     JsonNode folioRequestJson =
-        new FOLIORequestsRetrieverAPI(folioOkapiCredentials).getRequestById(requestId);
+        new FOLIORequestsRetrieverAPI(folioApiCredentials).getRequestById(requestId);
 
     JsonNode requestDateNode = folioRequestJson.at("/requestDate");
     ZonedDateTime requestDate =
@@ -367,7 +367,7 @@ public class FolioService {
 
   public void updateRequest(final RequestNoteDto requestNoteDto) throws IOException {
     FOLIORequestsRetrieverAPI folioRequestsRetrieverAPI =
-        new FOLIORequestsRetrieverAPI(folioOkapiCredentials);
+        new FOLIORequestsRetrieverAPI(folioApiCredentials);
     JsonNode folioRequestJson =
         folioRequestsRetrieverAPI.getRequestById(requestNoteDto.getRequestId());
     if (folioRequestJson != null) {
@@ -389,7 +389,7 @@ public class FolioService {
     }
 
     FOLIOPatronRetrieverAPI folioPatronRetrieverAPI =
-        new FOLIOPatronRetrieverAPI(folioOkapiCredentials);
+        new FOLIOPatronRetrieverAPI(folioApiCredentials);
     JsonNode userJsonNode = folioPatronRetrieverAPI.getUserByUsername(username.trim());
     if (userJsonNode == null) {
       log.error("Folio record for user with name: {} not found", username);
@@ -404,7 +404,7 @@ public class FolioService {
     }
 
     FOLIOPatronRolesAPI folioPatronRolesAPI =
-        new FOLIOPatronRolesAPI(folioOkapiCredentials);
+        new FOLIOPatronRolesAPI(folioApiCredentials);
     JsonNode rolesJsonNode = folioPatronRolesAPI.getRolesForUserId(userId);
     if (rolesJsonNode == null) {
       log.error("Unable to retrieve Folio roles for user id: {}", userId);

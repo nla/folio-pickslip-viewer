@@ -51,17 +51,17 @@ public class FolioAsyncService {
 
   private ObjectMapper mapper = new ObjectMapper();
 
-  private FOLIOAPICredentials folioOkapiCredentials;
+  private FOLIOAPICredentials folioApiCredentials;
 
   @PostConstruct
   public void init() throws IOException {
 
-    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
+    folioApiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
         "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_API_URL",
         folioConfiguration.getApiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
 
     FOLIOInstanceNoteTypesAPI folioInstanceNoteTypesAPI =
-        new FOLIOInstanceNoteTypesAPI(folioOkapiCredentials);
+        new FOLIOInstanceNoteTypesAPI(folioApiCredentials);
 
     this.folioAccessConditionsUuid =
         folioInstanceNoteTypesAPI.resolveNoteType(folioAccessConditionsNoteType);
@@ -71,7 +71,7 @@ public class FolioAsyncService {
         folioInstanceNoteTypesAPI.resolveNoteType(folioSpineLabelNoteType);
 
     FOLIOAlternativeTitleTypesAPI folioAlternativeTitleTypesAPI =
-        new FOLIOAlternativeTitleTypesAPI(folioOkapiCredentials);
+        new FOLIOAlternativeTitleTypesAPI(folioApiCredentials);
 
     this.folioVariantTitleAltTitleTypeUuid =
         folioAlternativeTitleTypesAPI.resolveAlternativeTitleType(folioVariantTitleAltTitleType);
@@ -146,7 +146,7 @@ public class FolioAsyncService {
   @Async
   public CompletableFuture<FolioInstance> getFolioInstance(String instanceId)
       throws JsonProcessingException {
-    String instance = new FOLIOInventoryAPI(folioOkapiCredentials).getInstance(instanceId);
+    String instance = new FOLIOInventoryAPI(folioApiCredentials).getInstance(instanceId);
     JsonNode n = mapper.readTree(instance);
 
     FolioInstance folioInstance =
