@@ -1,7 +1,6 @@
 package au.gov.nla.pickslip.service;
 
 import au.gov.nla.folio.api.FOLIOLocationsRetrieverAPI;
-import au.gov.nla.folio.api.FOLIOPatronPermissionsAPI;
 import au.gov.nla.folio.api.FOLIOPatronRetrieverAPI;
 import au.gov.nla.folio.api.FOLIOPatronRolesAPI;
 import au.gov.nla.folio.api.FOLIOPickslipsRetrieverAPI;
