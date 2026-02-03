@@ -381,7 +381,6 @@ public class FolioService {
     }
   }
 
-
   public List<String> getFolioRolesForUser(final String username) throws IOException {
     List<String> roles = new ArrayList<>();
 
