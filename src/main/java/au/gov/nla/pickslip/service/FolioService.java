@@ -1,8 +1,8 @@
 package au.gov.nla.pickslip.service;
 
 import au.gov.nla.folio.api.FOLIOLocationsRetrieverAPI;
-import au.gov.nla.folio.api.FOLIOPatronPermissionsAPI;
 import au.gov.nla.folio.api.FOLIOPatronRetrieverAPI;
+import au.gov.nla.folio.api.FOLIOPatronRolesAPI;
 import au.gov.nla.folio.api.FOLIOPickslipsRetrieverAPI;
 import au.gov.nla.folio.api.FOLIORequestsRetrieverAPI;
 import au.gov.nla.folio.api.FOLIOServicePointRetrieverAPI;
@@ -56,15 +56,15 @@ public class FolioService {
   @Autowired
   FolioConfiguration folioConfiguration;
 
-  private FOLIOAPICredentials folioOkapiCredentials;
+  private FOLIOAPICredentials folioApiCredentials;
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @PostConstruct
   public void init() {
-    folioOkapiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
-        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_OKAPI_URL",
-        folioConfiguration.getOkapiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
+    folioApiCredentials = FOLIOAPIUtils.toFOLIOAPICredentials(Map.of("FOLIO_TENANT", folioConfiguration.getTenant(),
+        "FOLIO_PASSWORD", folioConfiguration.getPassword(), "FOLIO_API_URL",
+        folioConfiguration.getApiUrl(), "FOLIO_USERNAME", folioConfiguration.getUsername()));
   }
 
   public Map<String, FolioInstance> getFolioInstances(List<String> instanceIds)
@@ -288,21 +288,21 @@ public class FolioService {
   // for spy / mock accessibility:
 
   protected JsonNode folioApiGetServicePoints() throws IOException {
-    return new FOLIOServicePointRetrieverAPI(folioOkapiCredentials).getServicePoints();
+    return new FOLIOServicePointRetrieverAPI(folioApiCredentials).getServicePoints();
   }
 
   protected JsonNode folioApiGetFolioLocations() throws IOException {
-    return new FOLIOLocationsRetrieverAPI(folioOkapiCredentials).getLocations();
+    return new FOLIOLocationsRetrieverAPI(folioApiCredentials).getLocations();
   }
 
   protected JsonNode folioApiGetPickslipsForServicePoint(String id, int folioPickslipsLimit)
       throws IOException {
-    return new FOLIOPickslipsRetrieverAPI(folioOkapiCredentials)
+    return new FOLIOPickslipsRetrieverAPI(folioApiCredentials)
         .getPickslipsForServicePoint(id, folioPickslipsLimit);
   }
 
   protected JsonNode folioApiGetRequests() throws IOException {
-    return new FOLIORequestsRetrieverAPI(folioOkapiCredentials)
+    return new FOLIORequestsRetrieverAPI(folioApiCredentials)
         .getRequestsByStatus(
             List.of(
                 PickslipQueues.Pickslip.Request.Status.OPEN_NOT_YET_FILLED.getCode(),
@@ -312,7 +312,7 @@ public class FolioService {
 
   public FolioRequest folioApiGetRequestById(final String requestId) throws IOException {
     JsonNode folioRequestJson =
-        new FOLIORequestsRetrieverAPI(folioOkapiCredentials).getRequestById(requestId);
+        new FOLIORequestsRetrieverAPI(folioApiCredentials).getRequestById(requestId);
 
     JsonNode requestDateNode = folioRequestJson.at("/requestDate");
     ZonedDateTime requestDate =
@@ -367,7 +367,7 @@ public class FolioService {
 
   public void updateRequest(final RequestNoteDto requestNoteDto) throws IOException {
     FOLIORequestsRetrieverAPI folioRequestsRetrieverAPI =
-        new FOLIORequestsRetrieverAPI(folioOkapiCredentials);
+        new FOLIORequestsRetrieverAPI(folioApiCredentials);
     JsonNode folioRequestJson =
         folioRequestsRetrieverAPI.getRequestById(requestNoteDto.getRequestId());
     if (folioRequestJson != null) {
@@ -380,47 +380,51 @@ public class FolioService {
     }
   }
 
-  public List<String> getFolioPermissionsForUser(final String username) throws IOException {
-    List<String> permissions = new ArrayList<>();
+  public List<String> getFolioRolesForUser(final String username) throws IOException {
+    List<String> roles = new ArrayList<>();
 
     if (Strings.isBlank(username)) {
       log.error("Username is empty");
-      return permissions;
+      return roles;
     }
 
     FOLIOPatronRetrieverAPI folioPatronRetrieverAPI =
-        new FOLIOPatronRetrieverAPI(folioOkapiCredentials);
+        new FOLIOPatronRetrieverAPI(folioApiCredentials);
     JsonNode userJsonNode = folioPatronRetrieverAPI.getUserByUsername(username.trim());
     if (userJsonNode == null) {
       log.error("Folio record for user with name: {} not found", username);
-      return permissions;
+      return roles;
     }
 
     String userId = userJsonNode.at("/id")
         .asText("");
     if (userId.isEmpty()) {
       log.error("Folio record for user with name: {} has no id", username);
-      return permissions;
+      return roles;
     }
 
-    FOLIOPatronPermissionsAPI folioPatronPermissionsAPI =
-        new FOLIOPatronPermissionsAPI(folioOkapiCredentials);
-    JsonNode permissionsJsonNode = folioPatronPermissionsAPI.getPermissionsForUserId(userId);
-    if (permissionsJsonNode == null) {
-      log.error("Unable to retrieve Folio permissions for user id: {}", userId);
-      return permissions;
+    FOLIOPatronRolesAPI folioPatronRolesAPI =
+        new FOLIOPatronRolesAPI(folioApiCredentials);
+    JsonNode rolesJsonNode = folioPatronRolesAPI.getRolesForUserId(userId);
+    if (rolesJsonNode == null) {
+      log.error("Unable to retrieve Folio roles for user id: {}", userId);
+      return roles;
     }
 
-    JsonNode permissionsArray = permissionsJsonNode.at("/permissionNames");
-    if (permissionsArray.isMissingNode() || !permissionsArray.isArray()) {
-      log.error("Unable to find permissions list in Folio response for user id: {}", userId);
-      return permissions;
+    JsonNode rolesArray = rolesJsonNode.at("/userRoles");
+    if (rolesArray.isMissingNode() || !rolesArray.isArray()) {
+      log.error("Unable to find roles list in Folio response for user id: {}", userId);
+      return roles;
     }
 
-    for (JsonNode jsonNode : permissionsArray) {
-      permissions.add(jsonNode.asText());
+    for (JsonNode jsonNode : rolesArray) {
+      JsonNode roleNode = jsonNode.at("/roleId");
+      if (!roleNode.isMissingNode()) {
+        log.info("Adding role id: {} for user id: {}", roleNode.asText(), userId);
+        roles.add(roleNode.asText());
+      }
     }
 
-    return permissions;
+    return roles;
   }
 }

@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 @Setter
 @Slf4j
 public class FolioConfiguration {
-  private String okapiUrl;
+  private String apiUrl;
   private String tenant;
   private String username;
   private String password;
+  private String RequestEditRoleUuid;
 }
