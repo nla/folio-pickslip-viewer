@@ -251,6 +251,11 @@ public class PickslipQueues {
       Pickslip pickslip =
           Pickslip.fromFolioPickSlipAndRequest(servicePointCodes, sp.code, fps, req);
 
+      // Skip pickslips with unavailable title - they should not appear in the UI
+      if ("(Unavailable)".equals(pickslip.item().title())) {
+        continue;
+      }
+
       // add pickslip
       List<Pickslip> pickslips = servicePointPickslips.get(sp);
       if (pickslips == null) {

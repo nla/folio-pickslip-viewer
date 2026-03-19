@@ -142,7 +142,7 @@ public class FolioServiceTests {
 
         // expected..
         var expected = Arrays.asList(
-                new FolioRequest("e688d594-379b-456d-845c-e68c14e613d8",
+                new FolioRequest("c62b7535-2d98-43c1-ba5c-906ceb41fcd7",
                         localRequestDate,
                         "",
                         "dd3223ca-a641-521e-9b51-2090d34bebd6",
@@ -151,7 +151,7 @@ public class FolioServiceTests {
                         "Open - Not yet filled",
                         null,
                         "1",
-                        new FolioRequest.Instance("Land without justice : an autobiography of his youth / Milovan Djilas ; with an introduction and notes by William Jovanovich."),
+                        new FolioRequest.Instance("Print : a manual for librarians and students describing in detail the  history, methods, and applications of printing and paper making."),
                         new FolioRequest.Item("990001588920", "655 MAN", new FolioRequest.Item.Location("MITCHELL WAREHOUSE [Mitchell]", "MITCHELL")),
                         new FolioRequest.Requester("21708000392647", "SPL"), Arrays.asList("mrr-sp", "parked")
                         )

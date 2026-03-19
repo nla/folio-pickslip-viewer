@@ -63,7 +63,7 @@ public class PickslipQueuesTests {
                 () -> Assertions.assertTrue(mrrPickslips.get(0).parked(), "Should have parked status")
                 );
 
-        Assertions.assertNotNull(pickslipQueues.getPickslipByRequestId("e688d594-379b-456d-845c-e68c14e613d8"), "Should exist");
+        Assertions.assertNotNull(pickslipQueues.getPickslipByRequestId("c62b7535-2d98-43c1-ba5c-906ceb41fcd7"), "Should exist");
         Assertions.assertEquals(1, pickslipQueues.getVisitorsForStack("MRR-SP").size(), "Should be visiting MRR stack");
         Assertions.assertEquals(0, pickslipQueues.getVisitorsForStack("MITCHELL-SP").size(), "Should be no visitors");
     }
