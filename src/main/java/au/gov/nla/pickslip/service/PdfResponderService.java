@@ -7,12 +7,16 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code128Writer;
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.*;
 import jakarta.annotation.PostConstruct;
 import java.io.*;
 import java.util.*;
+import org.openpdf.text.Document;
+import org.openpdf.text.PageSize;
+import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.pdf.PdfAction;
+import org.openpdf.text.pdf.PdfCopy;
+import org.openpdf.text.pdf.PdfImportedPage;
+import org.openpdf.text.pdf.PdfReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +45,7 @@ public class PdfResponderService {
   private void init() throws IOException {
     this.renderer = new ITextRenderer();
     ResourceLoaderUserAgent resourceLoaderUA =
-        new ResourceLoaderUserAgent(renderer.getOutputDevice());
-    resourceLoaderUA.setSharedContext(renderer.getSharedContext());
+        new ResourceLoaderUserAgent(renderer.getOutputDevice(), ITextRenderer.DEFAULT_DOTS_PER_PIXEL);
     renderer.getSharedContext().setUserAgentCallback(resourceLoaderUA);
 
     var resolver = renderer.getFontResolver();
@@ -80,7 +83,8 @@ public class PdfResponderService {
     return Base64.getEncoder().encodeToString(bos.toByteArray());
   }
 
-  public synchronized void generate(OutputStream os, List<PickslipQueues.Pickslip> pickslipList, String filename) {
+  public synchronized void generate(
+      OutputStream os, List<PickslipQueues.Pickslip> pickslipList, String filename) {
 
     Context ctx = new Context(LocaleContextHolder.getLocale());
 
@@ -119,14 +123,16 @@ public class PdfResponderService {
 
         String htmlContent = this.templateEngine.process("pdf/print_pdf", ctx);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        renderer.setDocumentFromString(htmlContent);
-        renderer.layout();
-        renderer.createPDF(baos);
+        byte[] data;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+          renderer.setDocumentFromString(htmlContent);
+          renderer.layout();
+          renderer.createPDF(baos);
+          data = baos.toByteArray(); // in the order of 3-5k per page fwiw
+        }
 
-        byte[] data = baos.toByteArray(); // in the order of 3-5k per page fwiw
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        PdfReader reader = new PdfReader(bais);
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
+            PdfReader reader = new PdfReader(bais)) {
         PdfImportedPage importedPage = writer.getImportedPage(reader, 1);
 
         log.debug("adding page... {} ", importedPage.getPageNumber());
@@ -137,7 +143,7 @@ public class PdfResponderService {
 
         writer.addPage(importedPage);
         writer.freeReader(reader);
-        reader.close();
+        }
       }
       writer.flush();
     } catch (IOException ioe) {
@@ -146,8 +152,8 @@ public class PdfResponderService {
   }
 
   private static class ResourceLoaderUserAgent extends ITextUserAgent {
-    public ResourceLoaderUserAgent(ITextOutputDevice outputDevice) {
-      super(outputDevice);
+    public ResourceLoaderUserAgent(ITextOutputDevice outputDevice, int dotsPerPixel) {
+      super(outputDevice, dotsPerPixel);
     }
 
     protected InputStream resolveAndOpenStream(String uri) {
