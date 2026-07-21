@@ -44,9 +44,7 @@
                             </td>
                             <td>
                                 <a th:target="_blank"
-                                   th:href="${@environment.getProperty('folio.request-view-prefix')}
-                                           +${s.request.id}
-                                           +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
+                                   th:href="${requestViewPrefix + s.request.id + requestViewPostfix}">[[${s.item.callNumber}]]</a>
                             </td>
 
                             <td th:text="${(s.item.yearCaption ?: '')}"></td>
@@ -119,9 +117,7 @@
 
                             <td>
                                 <a th:target="_blank"
-                                   th:href="${@environment.getProperty('folio.request-view-prefix')}
-                                           +${s.request.id}
-                                           +${@environment.getProperty('folio.request-view-postfix')}">[[${s.item.callNumber}]]</a>
+                                   th:href="${requestViewPrefix + s.request.id + requestViewPostfix}">[[${s.item.callNumber}]]</a>
                             </td>
 
                             <td th:text="${(s.item.yearCaption ?: '')}"></td>

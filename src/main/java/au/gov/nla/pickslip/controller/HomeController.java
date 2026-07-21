@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -52,6 +53,12 @@ public class HomeController {
 
   @Autowired
   RequestEditService requestEditService;
+
+  @Value("${folio.request-view-prefix}")
+  String requestViewPrefix;
+
+  @Value("${folio.request-view-postfix}")
+  String requestViewPostfix;
 
   private static final DateTimeFormatter CS_DOWNLOAD_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -166,6 +173,7 @@ public class HomeController {
       Model model,
       final Principal principal) {
 
+    addRequestViewAttributes(model);
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
     model.addAttribute("stacks", filterStackLocations(showOnly));
@@ -185,6 +193,7 @@ public class HomeController {
   public String index(@RequestParam(required = false) String[] showOnly, Model model,
                       final Principal principal) {
 
+    addRequestViewAttributes(model);
     model.addAttribute("lastSuccess", scheduledRequestRetrieverService.getLastCompleted());
     model.addAttribute("showOnly", showOnly);
     model.addAttribute("stacks", filterStackLocations(showOnly));
@@ -213,6 +222,11 @@ public class HomeController {
       }
     }
     return (stackList != null && !stackList.isEmpty()) ? stackList : stackLocations.getStacks();
+  }
+
+  private void addRequestViewAttributes(Model model) {
+    model.addAttribute("requestViewPrefix", requestViewPrefix);
+    model.addAttribute("requestViewPostfix", requestViewPostfix);
   }
 
   @GetMapping("/request/{requestId}/edit")
