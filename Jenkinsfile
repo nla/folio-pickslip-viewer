@@ -1,7 +1,6 @@
-nlaBuild steps: this,
-    applicationName: "folio-pickslip-viewer",
-    jdk: 'JDK 21',
-    deployToDev: false,
-    devHostname: "spade",
-    deployToNexus: true,
-    triggerTektonBuild: true
+cleanupWorkspace()
+javaMavenBuild(steps: this,
+    jdk: 'JDK 25',
+    appName: "folio-pickslip-viewer",
+    pushToArtifactStore: true,
+    ignoreSonar: true)
